@@ -36,6 +36,7 @@ void DeskAdmin::NewRounds() {
 	  for(Cards::iterator cardsIt = cards->begin();
 	      cardsIt != cards->end(); cardsIt++) {
 	      cout<<(CardTool::GetName(*cardsIt))<<" ";
+	      printf("%2d ",*cardsIt);
 	  }
 	  cout<<"\t\t";
 	}
@@ -48,6 +49,7 @@ void DeskAdmin::NewRounds() {
 	for(int j = 0;j<2;j++) {
 	  for(int i = 0;i<3;i++) {
 	    cout<<(CardTool::GetName(pub_cards[i]))<<" ";
+	    printf("%2d ",pub_cards[i]);
 	  }
 	  cout<<"\t\t\t\t";
 	}
@@ -57,6 +59,7 @@ void DeskAdmin::NewRounds() {
 	pub_cards.push_back(Deck::GetRandom());
 	cout<<"\t\t";
 	cout<<(CardTool::GetName(pub_cards[3]))<<" ";
+	printf("%2d ",pub_cards[3]);
 	cout<<"\t\t\t\t\t";
 	cout<<(CardTool::GetName(pub_cards[3]))<<" ";
 	cout<<"\t\t\t\t\t";
@@ -66,6 +69,7 @@ void DeskAdmin::NewRounds() {
 	pub_cards.push_back(Deck::GetRandom());
 	cout<<"\t\t";
 	cout<<(CardTool::GetName(pub_cards[4]))<<" ";
+	printf("%2d ",pub_cards[4]);
 	cout<<"\t\t\t\t\t";
 	cout<<(CardTool::GetName(pub_cards[4]))<<" ";
 	cout<<"\t\t\t\t\t";

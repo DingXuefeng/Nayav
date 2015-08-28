@@ -125,26 +125,25 @@ bool CardTool::IsFour(const Cards &cards,CardMasks& mask) {
 		if(cards[i]/4==cards[k]/4)
 		  for(size_t l = k+1;l<cards.size();l++)
 		    if(!mask[l])
-		      if(cards[i]/4==cards[l]/4) {
+		      if(cards[i]/4==cards[l]/4)
 			return true;
-		      }
   return false;
 }
 bool CardTool::IsFlush(const Cards &cards, CardMasks& mask) {
-  for(size_t i = 0;i<cards.size()-3;i++)
+  for(size_t i = 0;i<cards.size()-4;i++)
     if(!mask[i])
-      for(size_t j = i+1;j<cards.size()-2;j++)
+      for(size_t j = i+1;j<cards.size()-3;j++)
 	if(!mask[j])
-	  if(cards[i]%4==cards[j]%4)
-	    for(size_t k = j+1;k<cards.size()-1;k++)
+	  if((cards[i]%4)==(cards[j]%4))
+	    for(size_t k = j+1;k<cards.size()-2;k++)
 	      if(!mask[k])
-		if(cards[i]%4==cards[k]%4)
-		  for(size_t l = k+1;l<cards.size();l++)
+		if((cards[i]%4)==(cards[k]%4))
+		  for(size_t l = k+1;l<cards.size()-1;l++)
 		    if(!mask[l])
-		      if(cards[i]%4==cards[l]%4)
+		      if((cards[i]%4)==(cards[l]%4))
 			for(size_t m = l+1;m<cards.size();m++)
 			  if(!mask[m])
-			    if(cards[i]%4==cards[m]%4) {
+			    if((cards[i]%4)==(cards[m]%4)) {
 			      for(size_t n = 0;n<mask.size();n++) 
 				if((n==i)||(n==j)||(n==k)||(n==l)||(n==m))
 				  mask[n] = false;
@@ -152,31 +151,25 @@ bool CardTool::IsFlush(const Cards &cards, CardMasks& mask) {
 				  mask[n] = true;
 			      return true;
 			    }
-  return true;
+  return false;
 }
 bool CardTool::IsStraight(const Cards &cards, CardMasks& mask) {
-  for(size_t i = 0;i<cards.size()-3;i++)
+  for(size_t i = 0;i<cards.size()-4;i++)
     if(!mask[i])
-      for(size_t j = i+1;j<cards.size()-2;j++)
+      for(size_t j = i+1;j<cards.size()-3;j++)
 	if(!mask[j])
-	  if(cards[i]/4==cards[j]+1)
-	    for(size_t k = j+1;k<cards.size()-1;k++)
+	  if((cards[i]/4)==(cards[j]/4+1))
+	    for(size_t k = j+1;k<cards.size()-2;k++)
 	      if(!mask[k])
-		if(cards[j]/4==cards[k]+1)
-		  for(size_t l = k+1;l<cards.size();l++)
+		if((cards[j]/4)==(cards[k]/4+1))
+		  for(size_t l = k+1;l<cards.size()-1;l++)
 		    if(!mask[l])
-		      if(cards[k]/4==cards[l]+1)
+		      if((cards[k]/4)==(cards[l]/4+1))
 			for(size_t m = l+1;m<cards.size();m++)
 			  if(!mask[m])
-			    if(cards[l]/4==cards[m]+1) {
-			      mask[i] = true;
-			      mask[j] = true;
-			      mask[k] = true;
-			      mask[k] = true;
-			      mask[m] = true;
+			    if((cards[l]/4)==(cards[m]/4+1))
 			      return true;
-			    }
-  return true;
+  return false;
 }
 const char* CardTool::GetName(Card card) {
   const int color = card%4; 
@@ -211,21 +204,20 @@ const char* CardTool::GetName(Card card) {
     case 5:
     case 6:
     case 7:
-    case 8:
       result[name.size()] = '1'+number;
       break;
-    case 9: // 10
+    case 8: // 10
       result[name.size()] = '1';
       result[name.size()+1] = '0';
       break;
-    case 10:
+    case 9:
       result[name.size()] = 'J';
-    case 11:
+    case 10:
       result[name.size()] = 'Q';
-    case 12:
+    case 11:
       result[name.size()] = 'K';
       break;
-    case 13:
+    case 12:
       result[name.size()] = 'A';
     default:
       break;
