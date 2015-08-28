@@ -146,5 +146,6 @@ class DeskAdmin : public IDeskAdmin{
 //      int m_marks;
 //      Card m_primaryCard;
   };
+  void Show(const Cards& pub,const std::map<IPlayer*,const Cards*>&) const;
 };
 #endif

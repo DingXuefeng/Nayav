@@ -204,7 +204,7 @@ const char* CardTool::GetName(Card card) {
     case 5:
     case 6:
     case 7:
-      result[name.size()] = '1'+number;
+      result[name.size()] = '2'+number;
       break;
     case 8: // 10
       result[name.size()] = '1';
