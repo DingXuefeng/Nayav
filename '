@@ -41,50 +41,29 @@ const std::string CardTool::ToType(int rank) {
 int CardTool::Rank(const Cards &cards,const CardMasks& mask) {
   CardMasks _mask(mask.size());
   std::copy(mask.begin(),mask.end(),_mask.begin());
-  Cards _cards(cards.size());
-  std::copy(cards.begin(),cards.end(),_cards.begin());
-  for(size_t i = 0;i<_cards.size()-1;i++)
-    for(size_t j = i+1;j<_cards.size();j++)
-      if(_cards[i]/4<_cards[j]/4) {
-	Card tmp = _cards[i];
-	_cards[i] = _cards[j];
-	_cards[j] = tmp;
-      }
-  if(IsFlush(_cards,_mask))
-    if(IsStraight(_cards,_mask))
-      return straight_flush;
+  if(IsThree(cards,_mask)) {
+    if(IsPair(cards,_mask))
+      return full_house; // full house
     else
-      return flush;
-  else {
-    if(IsStraight(_cards,_mask))
-      return straight;
-    else {
-      if(IsFour(_cards,_mask))
-	return four;
-      else {
-	if(IsThree(_cards,_mask)) {
-	  if(IsPair(_cards,_mask))
-	    return full_house; // full house
-	  else
-	    return three; // three
-	} else {
-	  if(IsPair(_cards,_mask)) {
-	    if(IsPair(_cards,_mask))
-	      return two_pair;
-	    else
-	      return pair;
-	  }
-	}
-	return none;
-      }
+      return three; // three
+  } else {
+    if(IsPair(cards,_mask)) {
+      if(IsPair(cards,_mask))
+	return two_pair;
+      else
+	return pair;
     }
   }
+  return none;
 }
 //throw std::runtime_error("Is pair only accepts 2 cards.");
 #include <iostream>
 using std::cout;
 using std::endl;
 bool CardTool::IsPair(const Cards &cards,CardMasks& mask) {
+  for(size_t i = 0;i<cards.size();i++)
+    printf("%d %2s %2d %d\t",i,GetName(cards[i]),cards[i]/4,mask[i]);
+  cout<<"Pair"<<endl;
   for(size_t i = 0;i<cards.size()-1;i++)
     if(!mask[i])
       for(size_t j = i+1;j<cards.size();j++)
@@ -98,6 +77,9 @@ bool CardTool::IsPair(const Cards &cards,CardMasks& mask) {
 }
 
 bool CardTool::IsThree(const Cards &cards,CardMasks& mask) {
+  for(size_t i = 0;i<cards.size();i++)
+    cout<<i<<" "<<GetName(cards[i])<<mask[i]<<"\t";
+  cout<<"Thre"<<endl;
   for(size_t i = 0;i<cards.size()-2;i++)
     if(!mask[i])
       for(size_t j = i+1;j<cards.size()-1;j++)
@@ -114,68 +96,10 @@ bool CardTool::IsThree(const Cards &cards,CardMasks& mask) {
   return false;
 }
 
-bool CardTool::IsFour(const Cards &cards,CardMasks& mask) {
-  for(size_t i = 0;i<cards.size()-3;i++)
-    if(!mask[i])
-      for(size_t j = i+1;j<cards.size()-2;j++)
-	if(!mask[j])
-	  if(cards[i]/4==cards[j]/4)
-	    for(size_t k = j+1;k<cards.size()-1;k++)
-	      if(!mask[k])
-		if(cards[i]/4==cards[k]/4)
-		  for(size_t l = k+1;l<cards.size();l++)
-		    if(!mask[l])
-		      if(cards[i]/4==cards[l]/4) {
-			return true;
-		      }
-  return false;
-}
 bool CardTool::IsFlush(const Cards &cards, CardMasks& mask) {
-  for(size_t i = 0;i<cards.size()-3;i++)
-    if(!mask[i])
-      for(size_t j = i+1;j<cards.size()-2;j++)
-	if(!mask[j])
-	  if(cards[i]%4==cards[j]%4)
-	    for(size_t k = j+1;k<cards.size()-1;k++)
-	      if(!mask[k])
-		if(cards[i]%4==cards[k]%4)
-		  for(size_t l = k+1;l<cards.size();l++)
-		    if(!mask[l])
-		      if(cards[i]%4==cards[l]%4)
-			for(size_t m = l+1;m<cards.size();m++)
-			  if(!mask[m])
-			    if(cards[i]%4==cards[m]%4) {
-			      for(size_t n = 0;n<mask.size();n++) 
-				if((n==i)||(n==j)||(n==k)||(n==l)||(n==m))
-				  mask[n] = false;
-				else
-				  mask[n] = true;
-			      return true;
-			    }
   return true;
 }
 bool CardTool::IsStraight(const Cards &cards, CardMasks& mask) {
-  for(size_t i = 0;i<cards.size()-3;i++)
-    if(!mask[i])
-      for(size_t j = i+1;j<cards.size()-2;j++)
-	if(!mask[j])
-	  if(cards[i]/4==cards[j]+1)
-	    for(size_t k = j+1;k<cards.size()-1;k++)
-	      if(!mask[k])
-		if(cards[j]/4==cards[k]+1)
-		  for(size_t l = k+1;l<cards.size();l++)
-		    if(!mask[l])
-		      if(cards[k]/4==cards[l]+1)
-			for(size_t m = l+1;m<cards.size();m++)
-			  if(!mask[m])
-			    if(cards[l]/4==cards[m]+1) {
-			      mask[i] = true;
-			      mask[j] = true;
-			      mask[k] = true;
-			      mask[k] = true;
-			      mask[m] = true;
-			      return true;
-			    }
   return true;
 }
 const char* CardTool::GetName(Card card) {

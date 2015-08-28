@@ -12,7 +12,6 @@ typedef int Card;
 #include <vector>
 typedef std::vector<Card> Cards;
 typedef std::vector<bool> CardMasks;
-typedef std::vector<bool> CardMasks;
 #include <map>
 class IPlayer;
 typedef std::map<IPlayer*,const Cards*> Inhands;

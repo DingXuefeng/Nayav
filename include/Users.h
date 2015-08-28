@@ -14,7 +14,7 @@ class Users{
   public:
     static IPlayer* Loggin(const std::string username,const std::string passwd) {
       if(username == "dingxf" && passwd == "passwd")
-	return new Human(1000,false,0,"Ding X F");
+	return new Human(1000,false,0,"Ding");
       else
 	return NULL;
     };

@@ -29,4 +29,5 @@ class IPlayer {
     virtual void AllocateGift(const int id) = 0;
     */
 };
+typedef std::vector<IPlayer*> Players;
 #endif

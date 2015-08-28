@@ -15,7 +15,6 @@ void DeskAdmin::StartNewDesk() {
   }
 }
 
-#include <map>
 #include "CardTool.h"
 #include "IJudger.h"
 void DeskAdmin::NewRounds() {
@@ -29,38 +28,47 @@ void DeskAdmin::NewRounds() {
       case pre_flop:
 	for(Players::iterator on_deskIt = on_desk->begin();
 	    on_deskIt != on_desk->end(); on_deskIt++) {
-	  printf("Player [%s] ",(*on_deskIt)->GetName());
-	  Cards *cards = new Cards;
+	  printf("Player [%s] \t",(*on_deskIt)->GetName());
+	  Cards * cards = new Cards;
 	  cards->push_back(Deck::GetRandom());
 	  cards->push_back(Deck::GetRandom());
-	  inhands[*on_deskIt] = cards;
+	  inhands[*on_deskIt] = const_cast<const Cards*>(cards);
 	  for(Cards::iterator cardsIt = cards->begin();
 	      cardsIt != cards->end(); cardsIt++) {
 	      cout<<(CardTool::GetName(*cardsIt))<<" ";
 	  }
-	  cout<<'\t';
-	  delete cards;
+	  cout<<"\t\t";
 	}
-	cout<<"pre_flop"<<endl;
+	cout<<"\t\t\tpre_flop"<<endl;
 	break;
       case flop:
-	for(int i = 0;i<3;i++) {
+	cout<<"\t\t";
+	for(int i = 0;i<3;i++)
 	  pub_cards.push_back(Deck::GetRandom());
-	  cout<<(CardTool::GetName(pub_cards[i]))<<" ";
+	for(int j = 0;j<2;j++) {
+	  for(int i = 0;i<3;i++) {
+	    cout<<(CardTool::GetName(pub_cards[i]))<<" ";
+	  }
+	  cout<<"\t\t\t\t";
 	}
-	cout<<'\t';
 	cout<<"flop"<<endl;
 	break;
       case turn:
 	pub_cards.push_back(Deck::GetRandom());
+	cout<<"\t\t";
 	cout<<(CardTool::GetName(pub_cards[3]))<<" ";
-	cout<<'\t';
+	cout<<"\t\t\t\t\t";
+	cout<<(CardTool::GetName(pub_cards[3]))<<" ";
+	cout<<"\t\t\t\t\t";
 	cout<<"turn"<<endl;
 	break;
       case river:
 	pub_cards.push_back(Deck::GetRandom());
+	cout<<"\t\t";
 	cout<<(CardTool::GetName(pub_cards[4]))<<" ";
-	cout<<'\t';
+	cout<<"\t\t\t\t\t";
+	cout<<(CardTool::GetName(pub_cards[4]))<<" ";
+	cout<<"\t\t\t\t\t";
 	cout<<"river"<<endl;
 	break;
       default:

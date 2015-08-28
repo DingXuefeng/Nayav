@@ -21,7 +21,6 @@ class IDeskAdmin{
       turn,
       river
     };
-    typedef std::vector<IPlayer*> Players;
   public:
     virtual void Participate(IPlayer* player) = 0;
     virtual void StartNewDesk() = 0;
