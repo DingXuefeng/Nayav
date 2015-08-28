@@ -175,17 +175,17 @@ const char* CardTool::GetName(Card card) {
   const int color = card%4; 
   std::deque<char> name;
   switch(color) {
-    case 0:
-      name = unicode_to_utf8(0x2660);
-      break;
-    case 1:
-      name = unicode_to_utf8(0x2665);
-      break;
-    case 2:
+    case 0: // Diamond
       name = unicode_to_utf8(0x2666);
       break;
-    case 3:
+    case 1: // Club
       name = unicode_to_utf8(0x2663);
+      break;
+    case 2: // Heart
+      name = unicode_to_utf8(0x2665);
+      break;
+    case 3: // Spade
+      name = unicode_to_utf8(0x2660);
       break;
     default:
       break;
@@ -212,13 +212,16 @@ const char* CardTool::GetName(Card card) {
       break;
     case 9:
       result[name.size()] = 'J';
+      break;
     case 10:
       result[name.size()] = 'Q';
+      break;
     case 11:
       result[name.size()] = 'K';
       break;
     case 12:
       result[name.size()] = 'A';
+      break;
     default:
       break;
   }

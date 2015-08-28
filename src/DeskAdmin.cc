@@ -88,6 +88,7 @@ void DeskAdmin::NewRounds() {
 
 void DeskAdmin::Show(const Cards& pub_cards, 
     const std::map<IPlayer*,const Cards*> &inhands) const {
+  cout<<endl;
   for(Inhands::const_iterator inhandsIt = inhands.begin();
       inhandsIt != inhands.end(); ++inhandsIt ){
     printf("Player [%s] \t",inhandsIt->first->GetName());
@@ -95,7 +96,7 @@ void DeskAdmin::Show(const Cards& pub_cards,
 	cardsIt != inhandsIt->second->end(); cardsIt++) {
       cout<<((*cardsIt))<<" ";
     }
-    cout<<"\t\t";
+    cout<<"\t\t\t";
   }
   cout<<"\t\t\tpre_flop"<<endl;
   cout<<"\t\t";
