@@ -24,12 +24,11 @@ class IDeskAdmin{
   public:
     virtual void AddPlayer(IPlayer *player) = 0;
     virtual void StartNewDesk() = 0;
-    virtual const int GetCurrentRaise() const = 0;
+    virtual const int GetRoundBet() const = 0;
     virtual void Raise(IPlayer* raiser, const int raise) = 0;
   private:
     virtual IJudger* GetJudger() const = 0;
     virtual void SetJudger(IJudger* judger) = 0;
-    virtual const int GetSmallBlind() const = 0;
-    virtual const int GetBigBlind() const = 0;
+    virtual const int GetBlind() const = 0;
 };
 #endif

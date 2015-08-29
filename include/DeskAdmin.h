@@ -12,19 +12,22 @@
 #include "IPlayer.h"
 #include <vector>
 #include "Judger.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 class DeskAdmin : public IDeskAdmin{
   public:
     void AddPlayer(IPlayer *player) { m_players->push_back(player); };
     void StartNewDesk();
-    const int GetCurrentRaise() const { return m_currentRaise; }
+    const int GetRoundBet() const { return m_roundBet; }
     void Raise(IPlayer* raiser, const int raise) { 
-      m_raiser = m_currentPlayer; m_currentRaise += raise; 
+      m_raiser = m_currentPlayer; m_roundBet += raise; 
     }
     void NewRounds();
   private:
     Players::iterator m_currentPlayer;
     Players::iterator m_raiser;
-    int m_currentRaise;
+    int m_roundBet;
     Players *m_players;
     IJudger *m_judger;
     Players::iterator m_D_player;
@@ -36,11 +39,11 @@ class DeskAdmin : public IDeskAdmin{
     IJudger* GetJudger() const { return m_judger; };
     void SetJudger(IJudger* judger) { m_judger = judger; }
     void Show(const Cards& pub,const std::map<IPlayer*,const Cards*>&) const;
-    const int GetSmallBlind() const { return 10; };
-    const int GetBigBlind() const { return GetBigBlind()*2; };
+    const int GetBlind() const { return 10; };
     void Next_OnDesk() { 
-      ++m_currentPlayer; 
-      if(m_currentPlayer==(m_onDesk->end())) m_currentPlayer = m_onDesk->begin();
+      ++m_currentPlayer;
+      if(!*m_currentPlayer)
+	++m_currentPlayer;
     };
 };
 #endif

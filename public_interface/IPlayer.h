@@ -23,6 +23,8 @@ class IPlayer {
     virtual Action GetAction() const = 0;
     virtual const int GetRaisedMoney() const = 0;
     virtual const char *GetName() const = 0;
+    virtual const int GetMoney() const = 0;
+    virtual const int GetBet() const = 0;
   public:
     virtual void Fold() const = 0;
     virtual void Call() = 0;

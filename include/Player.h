@@ -14,6 +14,9 @@
 //class Gift;
 #include <cstring>
 #include "IDeskAdmin.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 class Player : public IPlayer {
   /*
   public:
@@ -27,11 +30,16 @@ class Player : public IPlayer {
     virtual Action GetAction() const = 0;
     virtual const int GetRaisedMoney() const = 0;
     const char* GetName() const { return m_name; };
+    const int GetMoney() const { return m_money; };
+    const int GetBet() const { return m_bet; };
     void Fold() const {};
-    void Call() { m_money -= GetDeskAdmin()->GetCurrentRaise(); };
+    void Call() { 
+      m_money -= GetDeskAdmin()->GetRoundBet()-GetBet(); 
+      m_bet = GetDeskAdmin()->GetRoundBet(); 
+    };
     void Raise(const int money) { 
       GetDeskAdmin()->Raise(this,money);
-      m_money -= GetDeskAdmin()->GetCurrentRaise(); 
+      Call();
     };
 
   private:
@@ -44,12 +52,13 @@ class Player : public IPlayer {
     IDeskAdmin* m_deskadmin;
     char m_name[30];
     int m_money;
+    int m_bet;
     bool m_allowSave;
     int m_saved;
 
   private:
     Player(int money,bool allowSave,int saved,const char *name) : 
-      m_money(money),m_allowSave(allowSave),m_saved(saved) {
+      m_money(money),m_bet(0),m_allowSave(allowSave),m_saved(saved) {
 	memcpy(m_name,name,30);
       };
     friend class Human;

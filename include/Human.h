@@ -10,6 +10,7 @@
 #define Human_H
 #include "Player.h"
 #include <iostream>
+#include "allegro.h"
 using namespace std;
 class Human : public Player{
   public:

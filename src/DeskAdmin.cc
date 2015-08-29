@@ -9,7 +9,7 @@ void DeskAdmin::StartNewDesk() {
   while(true) {
     NewRounds();
     if(m_players->size()<2) break;
-    m_D_player++;
+    ++m_D_player;
     if(m_D_player==m_players->end()) m_D_player = m_players->begin();
     a++;
     if(a==3) break;
@@ -22,7 +22,7 @@ void DeskAdmin::StartNewDesk() {
 void DeskAdmin::NewRounds() {
   cout<<"New rounds. "<<endl;
   Deck::Flush();
-  Players *on_desk = new Players(m_players->begin(),m_players->end());
+  Players *on_desk = new Players(*m_players);
   m_onDesk = on_desk;
   Cards pub_cards;
   std::map<IPlayer*,const Cards*> inhands;
@@ -32,7 +32,8 @@ void DeskAdmin::NewRounds() {
       case pre_flop:
 	for(Players::iterator on_deskIt = on_desk->begin();
 	    on_deskIt != on_desk->end(); on_deskIt++) {
-	  printf("Player [%s] \t",(*on_deskIt)->GetName());
+	  printf("Player [%s] $[%4d]\t",
+	      (*on_deskIt)->GetName(),(*on_deskIt)->GetMoney());
 	  Cards * cards = new Cards;
 	  cards->push_back(Deck::GetRandom());
 	  cards->push_back(Deck::GetRandom());
@@ -46,28 +47,39 @@ void DeskAdmin::NewRounds() {
 	}
 	cout<<"\t\t\tpre_flop"<<endl;
 	 
-	m_currentRaise = 0;
-	Next_OnDesk(); (*m_currentPlayer)->Raise(GetSmallBlind());
-	//Next_OnDesk(); (*m_currentPlayer)->Raise(GetBigBlind());
-	//Next_OnDesk();
-	//while(*m_currentPlayer!=m_raiser) {
-	//  IPlayer::Action action = (*m_currentPlayer)->GetAction();
-	//  switch(action) {
-	//    case IPlayer::fold:
-	//      on_desk->erase(m_currentPlayer);
-	//      break;
-	//    case IPlayer::call:
-	//      break;
-	//    case IPlayer::raise:
-	//      (*m_currentPlayer)->Raise((*m_currentPlayer)->GetRaisedMoney());
-	//      break;
-	//    default:
-	//      break;
-	//  }
-	//}
+	m_roundBet = 0;
+	Next_OnDesk(); (*m_currentPlayer)->Raise(GetBlind());
+	Next_OnDesk(); (*m_currentPlayer)->Raise(GetBlind());
+	Next_OnDesk();
+	while(*m_currentPlayer!=*m_raiser) {
+	  IPlayer::Action action = (*m_currentPlayer)->GetAction();
+	  cout<<"Round : Pre-flop // Player "<<
+	    (*m_currentPlayer)->GetName()<<" $ "<<(*m_currentPlayer)->GetMoney()<<
+	    " Bet $ "<<(*m_currentPlayer)->GetBet()<<" // ";
+	  switch(action) {
+	    case IPlayer::fold:
+	      cout<<" Fold ";
+	      on_desk->erase(m_currentPlayer);
+	      break;
+	    case IPlayer::call:
+	      cout<<" Call ";
+	      (*m_currentPlayer)->Call();
+	      break;
+	    case IPlayer::raise:
+	      cout<<" raise ";
+	      (*m_currentPlayer)->Raise((*m_currentPlayer)->GetRaisedMoney());
+	      break;
+	    default:
+	      break;
+	  }
+	  cout<<" => $ "<<(*m_currentPlayer)->GetMoney()<<
+	    " Bet $ "<<(*m_currentPlayer)->GetBet()<<endl;
+	  Next_OnDesk();
+	}
 	break;
       case flop:
 	cout<<"\t\t";
+	cout<<"\t";
 	for(int i = 0;i<3;i++)
 	  pub_cards.push_back(Deck::GetRandom());
 	for(int j = 0;j<2;j++) {
@@ -75,6 +87,7 @@ void DeskAdmin::NewRounds() {
 	    cout<<(CardTool::GetName(pub_cards[i]))<<" ";
 	    //	    printf("%2d ",pub_cards[i]);
 	  }
+	  cout<<"\t";
 	  cout<<"\t\t\t\t";
 	}
 	cout<<"flop"<<endl;
@@ -82,21 +95,27 @@ void DeskAdmin::NewRounds() {
       case turn:
 	pub_cards.push_back(Deck::GetRandom());
 	cout<<"\t\t";
+	cout<<"\t";
 	cout<<(CardTool::GetName(pub_cards[3]))<<" ";
 	//	printf("%2d ",pub_cards[3]);
+	cout<<"\t";
 	cout<<"\t\t\t\t\t";
 	cout<<(CardTool::GetName(pub_cards[3]))<<" ";
 	cout<<"\t\t\t\t\t";
+	cout<<"\t";
 	cout<<"turn"<<endl;
 	break;
       case river:
 	pub_cards.push_back(Deck::GetRandom());
 	cout<<"\t\t";
+	cout<<"\t";
 	cout<<(CardTool::GetName(pub_cards[4]))<<" ";
 	//	printf("%2d ",pub_cards[4]);
+	cout<<"\t";
 	cout<<"\t\t\t\t\t";
 	cout<<(CardTool::GetName(pub_cards[4]))<<" ";
 	cout<<"\t\t\t\t\t";
+	cout<<"\t";
 	cout<<"river"<<endl;
 	break;
       default:
@@ -125,7 +144,7 @@ void DeskAdmin::Show(const Cards& pub_cards,
     }
     cout<<"\t\t\t";
   }
-  cout<<"\t\t\tpre_flop"<<endl;
+  cout<<"\t\tpre_flop"<<endl;
   cout<<"\t\t";
   for(int j = 0;j<2;j++) {
     for(int i = 0;i<3;i++) {
