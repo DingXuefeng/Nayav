@@ -19,6 +19,7 @@ class IPlayer {
       allin
     };
   public:
+    virtual void Initialize() = 0;
     virtual void JoinDesk(IDeskAdmin* deskadmin) = 0;
     virtual Action GetAction() const = 0;
     virtual const int GetRaisedMoney() const = 0;

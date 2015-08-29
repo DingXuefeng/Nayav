@@ -13,10 +13,10 @@ class Nayav : public Player{
   public:
     Action GetAction() const;
     const int GetRaisedMoney() const { return 10; }
-    static Nayav* Me();
+    static IPlayer* New(const char* name = "\0");
 
   private:
-    Nayav() : Player(1000,false,0,"Nayav") {};
-    static Nayav* f_Nayav;
+    Nayav(const char* name = "Nayav") : Player(1000,false,0,name) {};
+    static std::vector<Nayav*> f_Nayavs;
 };
 #endif

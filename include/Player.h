@@ -27,6 +27,7 @@ class Player : public IPlayer {
     void AllocateGift(const int id) {};
     */
   public:
+    void Initialize() { m_bet = 0; };
     virtual Action GetAction() const = 0;
     virtual const int GetRaisedMoney() const = 0;
     const char* GetName() const { return m_name; };

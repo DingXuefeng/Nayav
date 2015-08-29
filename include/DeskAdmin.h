@@ -26,6 +26,11 @@ class DeskAdmin : public IDeskAdmin{
     void CheckLoop();
     void RaiseLoop();
     void PlayerAction();
+    void RecordStatus();
+    void ShowStatus();
+    int m_tmp_roundBet;
+    int m_tmp_money;
+    int m_tmp_bet;
     Players::iterator m_currentPlayer;
     IPlayer *m_raiser;
     int m_roundBet;
