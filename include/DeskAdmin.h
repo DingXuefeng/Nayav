@@ -32,6 +32,7 @@ class DeskAdmin : public IDeskAdmin{
     int m_tmp_money;
     int m_tmp_bet;
     Players::iterator m_currentPlayer;
+    IPlayer *m_actionPlayer;
     IPlayer *m_raiser;
     int m_roundBet;
     Players *m_players;

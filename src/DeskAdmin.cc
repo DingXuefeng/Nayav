@@ -5,6 +5,7 @@ using namespace std;
 void DeskAdmin::Raise(IPlayer* raiser, const int raise) { 
   m_raiser = *m_currentPlayer; m_roundBet += raise; 
 }
+
 void DeskAdmin::StartNewDesk() {
   Deck::Initialize();
   m_D_player = m_players->begin();
@@ -136,42 +137,48 @@ void DeskAdmin::CheckLoop() {
 }
 
 void DeskAdmin::RaiseLoop() {
-  return;
-  while(*m_currentPlayer!=m_raiser) {
+  Next_OnDesk();
+  do {
     PlayerAction();
     Next_OnDesk();
-  }
+  } while(*m_currentPlayer!=m_raiser);
 }
 
 void DeskAdmin::RecordStatus() {
   m_tmp_roundBet = GetRoundBet();
-  m_tmp_money = (*m_currentPlayer)->GetMoney();
-  m_tmp_bet = (*m_currentPlayer)->GetBet();
+  m_tmp_money = m_actionPlayer->GetMoney();
+  m_tmp_bet = m_actionPlayer->GetBet();
 }
 
 void DeskAdmin::ShowStatus() {
   printf("Player [%8s] $ (%4d) => (%4d), Bet $ (%4d) => (%4d) \
-Round Bet $ (%4d) => (%4d)\n",(*m_currentPlayer)->GetName(),
-  m_tmp_money,(*m_currentPlayer)->GetMoney(),
-  m_tmp_bet,(*m_currentPlayer)->GetBet(),
+Round Bet $ (%4d) => (%4d)\n",m_actionPlayer->GetName(),
+  m_tmp_money,m_actionPlayer->GetMoney(),
+  m_tmp_bet,m_actionPlayer->GetBet(),
   m_tmp_roundBet,GetRoundBet());
 }
 
 void DeskAdmin::PlayerAction() {
-  IPlayer::Action action = (*m_currentPlayer)->GetAction();
+  m_actionPlayer = *m_currentPlayer;
+  IPlayer::Action action = m_actionPlayer->GetAction();
   RecordStatus();
   switch(action) {
     case IPlayer::fold:
-      cout<<" Fold  ";
-      m_onDesk->erase(m_currentPlayer);
+      {
+	Players::iterator quiter = m_currentPlayer;
+	--m_currentPlayer;
+	if(!*m_currentPlayer)
+	  --m_currentPlayer;
+	m_onDesk->erase(quiter); 
+      }
       break;
     case IPlayer::call:
+      m_actionPlayer->Call();
       cout<<" Call  ";
-      (*m_currentPlayer)->Call();
       break;
     case IPlayer::raise:
+      m_actionPlayer->Raise(m_actionPlayer->GetRaisedMoney());
       cout<<" Raise ";
-      (*m_currentPlayer)->Raise((*m_currentPlayer)->GetRaisedMoney());
       break;
     default:
       break;
