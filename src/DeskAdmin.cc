@@ -83,7 +83,10 @@ void DeskAdmin::NewRounds() {
   Show(pub_cards,inhands);
   IJudger* judger = GetJudger();
   IPlayer* winner = judger->Judge(pub_cards,inhands);
-  printf("Winner is : [%s]\n",winner->GetName());
+  if(winner)
+    printf("Winner is : [%s]\n",winner->GetName());
+  else
+    printf("Fair!\n");
 }
 
 void DeskAdmin::Show(const Cards& pub_cards, 

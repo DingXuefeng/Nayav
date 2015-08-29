@@ -12,35 +12,50 @@ enum {
   pair = 10000,
   none = 0
 };
+#include <iostream>
+using std::cout;
+using std::endl;
 const std::string CardTool::ToType(int rank) {
-  switch(rank) {
-    case 0:
-      return "none";
-    case 10000:
-      return "pair";
-    case 20000:
-      return "two_pair";
-    case 30000:
-      return "three";
-    case 40000:
-      return "straight";
-    case 50000:
-      return "flush";
-    case 60000:
-      return "full house";
-    case 70000:
-      return "four";
-    case 80000:
-      return "flush straight";
-    case 90000:
-      return "Royal flush straight";
-    default:
-      return "Unknown";
+  int i = 0;
+  while(rank>13) {
+    rank = rank/14;
+    i++;
   }
+  std::string type;
+  switch(i) {
+    case 0:
+      type = "High card"; break;
+    case 1:
+      type = "One pair"; break;
+    case 2:
+      type = "Two pair"; break;
+    case 3:
+      type = "Three of a kind"; break;
+    case 4:
+      type = "Straight"; break;
+    case 5:
+      type = "Flush"; break;
+    case 6:
+      type = "Full house"; break;
+    case 7:
+      type = "Four"; break;
+    case 8:
+      if(rank==12)
+	type = "Royal flush straight";
+      else
+	type = "Flush straight";
+      break;
+    default:
+      type = "Unknown"; break;
+  }
+  type.append(" ");
+  type.append(GetNumberName(rank-1)); 
+  return type;
 }
-int CardTool::Rank(const Cards &cards,const CardMasks& mask) {
-  CardMasks _mask(mask.size());
-  std::copy(mask.begin(),mask.end(),_mask.begin());
+#include <cstring>
+#include <cmath>
+const int CardTool::Rank(const Cards &cards) {
+  CardMasks _mask(7,false);
   Cards _cards(cards.size());
   std::copy(cards.begin(),cards.end(),_cards.begin());
   for(size_t i = 0;i<_cards.size()-1;i++)
@@ -50,86 +65,25 @@ int CardTool::Rank(const Cards &cards,const CardMasks& mask) {
 	_cards[i] = _cards[j];
 	_cards[j] = tmp;
       }
-  if(IsFlush(_cards,_mask))
-    if(IsStraight(_cards,_mask))
-      return straight_flush;
-    else
-      return flush;
-  else {
-    if(IsStraight(_cards,_mask))
-      return straight;
-    else {
-      if(IsFour(_cards,_mask))
-	return four;
-      else {
-	if(IsThree(_cards,_mask)) {
-	  if(IsPair(_cards,_mask))
-	    return full_house; // full house
-	  else
-	    return three; // three
-	} else {
-	  if(IsPair(_cards,_mask)) {
-	    if(IsPair(_cards,_mask))
-	      return two_pair;
-	    else
-	      return pair;
-	  }
-	}
-	return none;
-      }
-    }
-  }
+  char* mark = new char[6];
+  memset(mark,0,6);
+  mark[6] = IsFlush(_cards,_mask);
+  mark[5] = IsStraight(_cards,_mask);
+  mark[4] = IsFour(_cards,_mask);
+  mark[3] = IsThree(_cards,_mask);
+  mark[2] = IsPair(_cards,_mask);
+  mark[1] = IsPair(_cards,_mask);
+  mark[0] = _cards[0]/4+1;
+  int final_mark = mark[6]*(mark[5]>0)*pow(14,8)+
+    mark[4]*pow(14,7)+mark[3]*(mark[2]>0)*pow(14,6)+mark[6]*pow(14,5)+
+    mark[5]*pow(14,4)+mark[3]*pow(14,3)+
+    mark[2]*((mark[1]>0)*13+1)*14+mark[1]*14+
+    mark[0];
+  return final_mark;
 }
 //throw std::runtime_error("Is pair only accepts 2 cards.");
-#include <iostream>
-using std::cout;
-using std::endl;
-bool CardTool::IsPair(const Cards &cards,CardMasks& mask) {
-  for(size_t i = 0;i<cards.size()-1;i++)
-    if(!mask[i])
-      for(size_t j = i+1;j<cards.size();j++)
-	if(!mask[j])
-	  if(cards[i]/4==cards[j]/4) {
-	    mask[i] = true;
-	    mask[j] = true;
-	    return true;
-	  }
-  return false;
-}
-
-bool CardTool::IsThree(const Cards &cards,CardMasks& mask) {
-  for(size_t i = 0;i<cards.size()-2;i++)
-    if(!mask[i])
-      for(size_t j = i+1;j<cards.size()-1;j++)
-	if(!mask[j])
-	  if(cards[i]/4==cards[j]/4)
-	    for(size_t k = j+1;k<cards.size();k++)
-	      if(!mask[k])
-		if(cards[i]/4==cards[k]/4) {
-		  mask[i] = true;
-		  mask[j] = true;
-		  mask[k] = true;
-		  return true;
-		}
-  return false;
-}
-
-bool CardTool::IsFour(const Cards &cards,CardMasks& mask) {
-  for(size_t i = 0;i<cards.size()-3;i++)
-    if(!mask[i])
-      for(size_t j = i+1;j<cards.size()-2;j++)
-	if(!mask[j])
-	  if(cards[i]/4==cards[j]/4)
-	    for(size_t k = j+1;k<cards.size()-1;k++)
-	      if(!mask[k])
-		if(cards[i]/4==cards[k]/4)
-		  for(size_t l = k+1;l<cards.size();l++)
-		    if(!mask[l])
-		      if(cards[i]/4==cards[l]/4)
-			return true;
-  return false;
-}
-bool CardTool::IsFlush(const Cards &cards, CardMasks& mask) {
+//
+const int CardTool::IsFlush(const Cards &cards, CardMasks& mask) {
   for(size_t i = 0;i<cards.size()-4;i++)
     if(!mask[i])
       for(size_t j = i+1;j<cards.size()-3;j++)
@@ -149,11 +103,12 @@ bool CardTool::IsFlush(const Cards &cards, CardMasks& mask) {
 				  mask[n] = false;
 				else
 				  mask[n] = true;
-			      return true;
+			      return cards[i]/4+1;
 			    }
-  return false;
+  return 0;
 }
-bool CardTool::IsStraight(const Cards &cards, CardMasks& mask) {
+
+const int CardTool::IsStraight(const Cards &cards, CardMasks& mask) {
   for(size_t i = 0;i<cards.size()-4;i++)
     if(!mask[i])
       for(size_t j = i+1;j<cards.size()-3;j++)
@@ -167,10 +122,63 @@ bool CardTool::IsStraight(const Cards &cards, CardMasks& mask) {
 		      if((cards[k]/4)==(cards[l]/4+1))
 			for(size_t m = l+1;m<cards.size();m++)
 			  if(!mask[m])
-			    if((cards[l]/4)==(cards[m]/4+1))
-			      return true;
-  return false;
+			    if((cards[l]/4)==(cards[m]/4+1)) {
+			      for(size_t n = 0;n<mask.size();n++) 
+				mask[n] = true;
+			      return cards[i]/4+1;
+			    }
+  return 0;
 }
+
+const int CardTool::IsFour(const Cards &cards,CardMasks& mask) {
+  for(size_t i = 0;i<cards.size()-3;i++)
+    if(!mask[i])
+      for(size_t j = i+1;j<cards.size()-2;j++)
+	if(!mask[j])
+	  if(cards[i]/4==cards[j]/4)
+	    for(size_t k = j+1;k<cards.size()-1;k++)
+	      if(!mask[k])
+		if(cards[i]/4==cards[k]/4)
+		  for(size_t l = k+1;l<cards.size();l++)
+		    if(!mask[l])
+		      if(cards[i]/4==cards[l]/4) {
+			for(size_t n = 0;n<mask.size();n++) 
+			  mask[n] = true;
+			return cards[i]/4+1;
+		      }
+  return 0;
+}
+
+const int CardTool::IsThree(const Cards &cards,CardMasks& mask) {
+  for(size_t i = 0;i<cards.size()-2;i++)
+    if(!mask[i])
+      for(size_t j = i+1;j<cards.size()-1;j++)
+	if(!mask[j])
+	  if(cards[i]/4==cards[j]/4)
+	    for(size_t k = j+1;k<cards.size();k++)
+	      if(!mask[k])
+		if(cards[i]/4==cards[k]/4) {
+		  mask[i] = true;
+		  mask[j] = true;
+		  mask[k] = true;
+		  return cards[i]/4+1;
+		}
+  return 0;
+}
+
+const int CardTool::IsPair(const Cards &cards,CardMasks& mask) {
+  for(size_t i = 0;i<cards.size()-1;i++)
+    if(!mask[i])
+      for(size_t j = i+1;j<cards.size();j++)
+	if(!mask[j])
+	  if(cards[i]/4==cards[j]/4) {
+	    mask[i] = true;
+	    mask[j] = true;
+	    return cards[i]/4+1;
+	  }
+  return 0;
+}
+
 const char* CardTool::GetName(Card card) {
   const int color = card%4; 
   std::deque<char> name;
@@ -192,11 +200,17 @@ const char* CardTool::GetName(Card card) {
   }
   char* result = new char[name.size()+3];
   std::copy(name.begin(),name.end(),result);
-  const int number = card/4; // 0-12, 2,3,4,5,6,7,8,9,10,J,Q,K,A
-  result[name.size()+1]=' ';
-  result[name.size()+2]='\0';
+  const char* number_name = GetNumberName(card/4);
+  std::copy(number_name,number_name+3,result+name.size());
+  return result;
+}
+
+const char* CardTool::GetNumberName(int number) {
+  char* result = new char[3];
+  result[1]=' ';
+  result[2]='\0';
   switch(number) {
-    case 0: // 1
+    case 0: // 2
     case 1:
     case 2:
     case 3:
@@ -204,29 +218,30 @@ const char* CardTool::GetName(Card card) {
     case 5:
     case 6:
     case 7:
-      result[name.size()] = '2'+number;
+      result[0] = '2'+number;
       break;
     case 8: // 10
-      result[name.size()] = '1';
-      result[name.size()+1] = '0';
+      result[0] = '1';
+      result[1] = '0';
       break;
     case 9:
-      result[name.size()] = 'J';
+      result[0] = 'J';
       break;
     case 10:
-      result[name.size()] = 'Q';
+      result[0] = 'Q';
       break;
     case 11:
-      result[name.size()] = 'K';
+      result[0] = 'K';
       break;
     case 12:
-      result[name.size()] = 'A';
+      result[0] = 'A';
       break;
     default:
       break;
   }
   return result;
 }
+
 std::deque<char> CardTool::unicode_to_utf8(int charcode) {
   std::deque<char> d;
   if (charcode < 128)
