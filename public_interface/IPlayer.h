@@ -8,7 +8,8 @@
 
 #ifndef IPlayer_H
 #define IPlayer_H
-#include <vector>
+#include <list>
+class IDeskAdmin;
 class IPlayer {
   public:
     enum Action {
@@ -18,16 +19,14 @@ class IPlayer {
       allin
     };
   public:
+    virtual void JoinDesk(IDeskAdmin* deskadmin) = 0;
     virtual Action GetAction() const = 0;
     virtual const char *GetName() const = 0;
-    /*
   public:
-    virtual std::vector<Card*>* GetInhands() const = 0;
-    virtual const int GetMoney() const = 0;
-    virtual const bool GetAllowSave() const =0;
-    virtual const std::vector<Gift*>* CheckGift() const = 0;
-    virtual void AllocateGift(const int id) = 0;
-    */
+    virtual void Fold() const = 0;
+    virtual void Call() = 0;
+    virtual void Raise(int money) = 0;
+    virtual IDeskAdmin* GetDeskAdmin() const = 0;
 };
-typedef std::vector<IPlayer*> Players;
+typedef std::list<IPlayer*> Players;
 #endif

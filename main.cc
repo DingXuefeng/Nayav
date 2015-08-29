@@ -6,8 +6,8 @@ int main() {
   IPlayer* nayav = Nayav::Me();
 
   IDeskAdmin* eimer = Eimer::Me();
-  eimer->Participate(nayav);
-  eimer->Participate(dingxf);
+  nayav->JoinDesk(eimer);
+  dingxf->JoinDesk(eimer);
   eimer->StartNewDesk();
   return 0;
 }

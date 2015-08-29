@@ -13,6 +13,7 @@
 //class Card;
 //class Gift;
 #include <cstring>
+#include "IDeskAdmin.h"
 class Player : public IPlayer {
   /*
   public:
@@ -25,8 +26,21 @@ class Player : public IPlayer {
   public:
     virtual Action GetAction() const = 0;
     const char* GetName() const { return m_name; };
+    void Fold() const {};
+    void Call() { m_money -= GetDeskAdmin()->GetCurrentRaise(); };
+    void Raise(const int money) { 
+      GetDeskAdmin()->Raise(this,money);
+      m_money -= GetDeskAdmin()->GetCurrentRaise(); 
+    };
+
   private:
 //    std::vector<Card*>* m_inhands;
+    void JoinDesk(IDeskAdmin* deskadmin) { 
+      m_deskadmin = deskadmin; 
+      deskadmin->AddPlayer(this);
+    };
+    IDeskAdmin* GetDeskAdmin() const { return m_deskadmin; };
+    IDeskAdmin* m_deskadmin;
     char m_name[30];
     int m_money;
     bool m_allowSave;

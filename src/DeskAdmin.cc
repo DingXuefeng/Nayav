@@ -4,12 +4,13 @@ using namespace std;
 #include "Deck.h"
 void DeskAdmin::StartNewDesk() {
   Deck::Initialize();
-  int m_pos_D = 0;
+  m_D_player = m_players->begin();
   int a=0;
   while(true) {
     NewRounds();
     if(m_players->size()<2) break;
-    m_pos_D = (m_pos_D+1)%m_players->size();
+    m_D_player++;
+    if(m_D_player==m_players->end()) m_D_player = m_D_player->begin();
     a++;
     if(a==3) break;
   }
@@ -17,6 +18,7 @@ void DeskAdmin::StartNewDesk() {
 
 #include "CardTool.h"
 #include "IJudger.h"
+#include <list>
 void DeskAdmin::NewRounds() {
   cout<<"New rounds. "<<endl;
   Deck::Flush();
@@ -26,6 +28,7 @@ void DeskAdmin::NewRounds() {
   for(int round = pre_flop; round<=river; ++round) {
     switch(round) {
       case pre_flop:
+	// send out
 	for(Players::iterator on_deskIt = on_desk->begin();
 	    on_deskIt != on_desk->end(); on_deskIt++) {
 	  printf("Player [%s] \t",(*on_deskIt)->GetName());
@@ -41,6 +44,29 @@ void DeskAdmin::NewRounds() {
 	  cout<<"\t\t";
 	}
 	cout<<"\t\t\tpre_flop"<<endl;
+	// 
+	size_t index = m_pos_D;
+	(*on_desk)[(++index)%(on_desk->size())]->Raise(GetSmallBlind());
+	(*on_desk)[(++index)%(on_desk->size())]->Raise(GetBigBlind());
+	bool raised = true;
+	while(raised) {
+	  raised = false;
+	  for(;index<=m_pos_D+on_desk->size();index++) {
+	    IPlayer::Action action = (*on_desk)[index]->GetAction();
+	    switch(action) {
+	      case IPlayer::fold:
+		on_desk->erase(index%(on_desk->size()));
+		break;
+	      case IPlayer::call:
+		break;
+	      case IPlayer::raise:
+		raised = true;
+		break;
+	      default:
+		break;
+	    }
+	  }
+	}
 	break;
       case flop:
 	cout<<"\t\t";
