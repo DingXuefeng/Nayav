@@ -45,25 +45,26 @@ void DeskAdmin::NewRounds() {
 	  cout<<"\t\t";
 	}
 	cout<<"\t\t\tpre_flop"<<endl;
-	// 
+	 
+	m_currentRaise = 0;
 	Next_OnDesk(); (*m_currentPlayer)->Raise(GetSmallBlind());
-	Next_OnDesk(); (*m_currentPlayer)->Raise(GetBigBlind());
-	Next_OnDesk();
-	while(*m_currentPlayer!=m_raiser) {
-	  IPlayer::Action action = (*m_currentPlayer)->GetAction();
-	  switch(action) {
-	    case IPlayer::fold:
-	      on_desk->erase(m_currentPlayer);
-	      break;
-	    case IPlayer::call:
-	      break;
-	    case IPlayer::raise:
-	      (*m_currentPlayer)->Raise((*m_currentPlayer)->GetRaisedMoney());
-	      break;
-	    default:
-	      break;
-	  }
-	}
+	//Next_OnDesk(); (*m_currentPlayer)->Raise(GetBigBlind());
+	//Next_OnDesk();
+	//while(*m_currentPlayer!=m_raiser) {
+	//  IPlayer::Action action = (*m_currentPlayer)->GetAction();
+	//  switch(action) {
+	//    case IPlayer::fold:
+	//      on_desk->erase(m_currentPlayer);
+	//      break;
+	//    case IPlayer::call:
+	//      break;
+	//    case IPlayer::raise:
+	//      (*m_currentPlayer)->Raise((*m_currentPlayer)->GetRaisedMoney());
+	//      break;
+	//    default:
+	//      break;
+	//  }
+	//}
 	break;
       case flop:
 	cout<<"\t\t";

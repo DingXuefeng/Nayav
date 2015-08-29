@@ -18,12 +18,12 @@ class DeskAdmin : public IDeskAdmin{
     void StartNewDesk();
     const int GetCurrentRaise() const { return m_currentRaise; }
     void Raise(IPlayer* raiser, const int raise) { 
-      m_raiser = raiser; m_currentRaise += raise; 
+      m_raiser = m_currentPlayer; m_currentRaise += raise; 
     }
     void NewRounds();
   private:
     Players::iterator m_currentPlayer;
-    IPlayer* m_raiser;
+    Players::iterator m_raiser;
     int m_currentRaise;
     Players *m_players;
     IJudger *m_judger;
