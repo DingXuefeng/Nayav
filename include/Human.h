@@ -10,23 +10,25 @@
 #define Human_H
 #include "Player.h"
 #include <iostream>
-#include "allegro.h"
+#include <limits>
 using namespace std;
 class Human : public Player{
   public:
     Action GetAction() const {
-      cout<<"0 fold"<<endl
-	<<"1 call"<<endl
-	<<"2 raise"<<endl;
+      std::cout<<"0 fold // 1 call // 2 raise : "<<std::flush;
       int action_id;
       std::cin>>action_id;
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       Action action = static_cast<Action>(action_id);
       return action;
     }
     const int GetRaisedMoney() const { 
-      cout<<"How much money? :";
+      std::cout<<"How much money? :"<<std::flush;
       int money;
       cin>>money;
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       return money; 
     }
   private:

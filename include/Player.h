@@ -41,6 +41,9 @@ class Player : public IPlayer {
       GetDeskAdmin()->Raise(this,money);
       Call();
     };
+    void ShowStatus() const {
+      cout<<" Player "<<GetName()<<" $ "<<m_money<<" Bet $ "<<m_bet<<endl;
+    }
 
   private:
 //    std::vector<Card*>* m_inhands;

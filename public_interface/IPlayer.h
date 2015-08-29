@@ -25,6 +25,7 @@ class IPlayer {
     virtual const char *GetName() const = 0;
     virtual const int GetMoney() const = 0;
     virtual const int GetBet() const = 0;
+    virtual void ShowStatus() const = 0;
   public:
     virtual void Fold() const = 0;
     virtual void Call() = 0;

@@ -20,13 +20,14 @@ class DeskAdmin : public IDeskAdmin{
     void AddPlayer(IPlayer *player) { m_players->push_back(player); };
     void StartNewDesk();
     const int GetRoundBet() const { return m_roundBet; }
-    void Raise(IPlayer* raiser, const int raise) { 
-      m_raiser = m_currentPlayer; m_roundBet += raise; 
-    }
+    void Raise(IPlayer* raiser, const int raise);
     void NewRounds();
   private:
+    void CheckLoop();
+    void RaiseLoop();
+    void PlayerAction();
     Players::iterator m_currentPlayer;
-    Players::iterator m_raiser;
+    IPlayer *m_raiser;
     int m_roundBet;
     Players *m_players;
     IJudger *m_judger;
