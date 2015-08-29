@@ -12,6 +12,7 @@
 class Nayav : public Player{
   public:
     Action GetAction() const;
+    const int GetRaisedMoney() const { return 10; }
     static Nayav* Me();
 
   private:

@@ -22,6 +22,12 @@ class Human : public Player{
       Action action = static_cast<Action>(action_id);
       return action;
     }
+    const int GetRaisedMoney() const { 
+      cout<<"How much money? :";
+      int money;
+      cin>>money;
+      return money; 
+    }
   private:
     Human(int money,bool allowSave,int saved,const char *name) : 
       Player(money,allowSave,saved,name) {};

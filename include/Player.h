@@ -25,6 +25,7 @@ class Player : public IPlayer {
     */
   public:
     virtual Action GetAction() const = 0;
+    virtual const int GetRaisedMoney() const = 0;
     const char* GetName() const { return m_name; };
     void Fold() const {};
     void Call() { m_money -= GetDeskAdmin()->GetCurrentRaise(); };

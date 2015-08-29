@@ -21,6 +21,7 @@ class IPlayer {
   public:
     virtual void JoinDesk(IDeskAdmin* deskadmin) = 0;
     virtual Action GetAction() const = 0;
+    virtual const int GetRaisedMoney() const = 0;
     virtual const char *GetName() const = 0;
   public:
     virtual void Fold() const = 0;
