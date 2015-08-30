@@ -1,0 +1,8 @@
+g++ -o tmp/main.o -c main.cc -I./include  -Ipublic_interface -pipe -Wall -O2 -std=c++0x -D_GLIBCXX_USE_NANOSLEEP -g
+g++ -o tmp/CardTool.o -c src/CardTool.cc -I./include  -Ipublic_interface -pipe -Wall -O2 -std=c++0x -D_GLIBCXX_USE_NANOSLEEP -g
+g++ -o tmp/Deck.o -c src/Deck.cc -I./include  -Ipublic_interface -pipe -Wall -O2 -std=c++0x -D_GLIBCXX_USE_NANOSLEEP -g
+g++ -o tmp/DeskAdmin.o -c src/DeskAdmin.cc -I./include  -Ipublic_interface -pipe -Wall -O2 -std=c++0x -D_GLIBCXX_USE_NANOSLEEP -g
+g++ -o tmp/Eimer.o -c src/Eimer.cc -I./include  -Ipublic_interface -pipe -Wall -O2 -std=c++0x -D_GLIBCXX_USE_NANOSLEEP -g
+g++ -o tmp/Judger.o -c src/Judger.cc -I./include  -Ipublic_interface -pipe -Wall -O2 -std=c++0x -D_GLIBCXX_USE_NANOSLEEP -g
+g++ -o tmp/Nayav.o -c src/Nayav.cc -I./include  -Ipublic_interface -pipe -Wall -O2 -std=c++0x -D_GLIBCXX_USE_NANOSLEEP -g
+g++ -o TPoker tmp/main.o tmp/CardTool.o tmp/Deck.o tmp/DeskAdmin.o tmp/Eimer.o tmp/Judger.o tmp/Nayav.o 

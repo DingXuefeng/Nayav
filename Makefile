@@ -19,7 +19,7 @@ TESTFILES += $(wildcard ${TEST}/*.C)
 TESTOBJFILES := $(patsubst ${TEST}/%.cc,${TMP}/%.o,$(patsubst ${SRC}/%.C,${TMP}/%.o,${TESTFILES}))
 
 CC := g++
-CPPFLAGS := -I$(HEAD) -Ipublic_interface -pipe -Wall -O2
+CPPFLAGS := -I$(HEAD) -Ipublic_interface -pipe -Wall -O2 -std=c++0x -D_GLIBCXX_USE_NANOSLEEP -g
 
 # for ROOT
 #CPPFLAGS += $(shell root-config --cflags)

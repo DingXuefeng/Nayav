@@ -25,6 +25,7 @@ class DeskAdmin : public IDeskAdmin{
     void Raise(IPlayer* raiser, const int raise);
     void NewRounds();
   private:
+    void BlindAction();
     void CheckLoop();
     void RaiseLoop();
     void Loop();
@@ -34,8 +35,11 @@ class DeskAdmin : public IDeskAdmin{
     int m_tmp_roundBet;
     int m_tmp_money;
     int m_tmp_bet;
+    int m_round;
     Players::iterator m_currentPlayer;
     IPlayer *m_actionPlayer;
+    IPlayer *m_smallBlind;
+    IPlayer *m_bigBlind;
     IPlayer *m_firstPlayer;
     Players::iterator m_roundsFirstPlayer;
     IPlayer *m_raiser;
@@ -57,6 +61,7 @@ class DeskAdmin : public IDeskAdmin{
     IJudger* GetJudger() const { return m_judger; };
     void SetJudger(IJudger* judger) { m_judger = judger; }
     void Show(const Cards& pub,const std::map<IPlayer*,const Cards*>&) const;
+    const bool IsBlind() const;
     const int GetBlind() const { return 10; };
     void Next_OnDesk() { 
       ++m_currentPlayer;
