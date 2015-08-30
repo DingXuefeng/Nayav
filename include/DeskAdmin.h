@@ -44,8 +44,8 @@ class DeskAdmin : public IDeskAdmin{
     const Players & GetonDesk() const { return GetRoundAdmin()->GetonDesk(); }
     const Cards& GetpubCards() const { return GetJudger()->GetpubCards(); }
     Cards& GetpubCards() { return GetJudger()->GetpubCards(); }
-    const Inhands& Getinhands() const { return m_inhands; }
-    Inhands& Getinhands() { return m_inhands; }
+    const Inhands& Getinhands() const { return GetJudger()->Getinhands(); }
+    Inhands& Getinhands() { return GetJudger()->Getinhands(); }
 
     const Players *m_players;
     IJudger *m_judger;

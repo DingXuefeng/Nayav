@@ -63,7 +63,7 @@ void DeskAdmin::SendInhand() {
 
 void DeskAdmin::FirstRoundLoop() {
   SendCards();
-  SendInhand();
+  //SendInhand();
   Loop();
 }
 
