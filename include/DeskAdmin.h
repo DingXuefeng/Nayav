@@ -22,11 +22,9 @@ class DeskAdmin : public IDeskAdmin{
       const_cast<Players*>(m_players)->push_back(player); 
     };
     void StartNewDesk();
-    int& GetRoundBet() { return GetRoundAdmin()->GetRoundBet(); }
-    const int GetRoundBet() const { return GetRoundAdmin()->GetRoundBet(); }
     void Raise(IPlayer* raiser, const int raise);
     void NewRounds();
-    void AddBet(const int bet) { m_pool += bet; }
+    void AddBet(const int bet) { Getpool() += bet; }
   private:
     void BlindAction();
     void CheckLoop();
@@ -35,12 +33,11 @@ class DeskAdmin : public IDeskAdmin{
     void PlayerAction();
     void RecordStatus();
     void ShowStatus();
-    int m_tmp_roundBet;
-    int m_tmp_money;
-    int m_tmp_bet;
-    int m_tmp_pool;
     int m_round;
-    int m_pool;
+    int& GetRoundBet() { return GetRoundAdmin()->GetRoundBet(); }
+    const int GetRoundBet() const { return GetRoundAdmin()->GetRoundBet(); }
+    int& Getpool() { return GetRoundAdmin()->Getpool(); }
+    const int Getpool() const { return GetRoundAdmin()->Getpool(); }
     IPlayer *& GetActionPlayer() { return GetRoundAdmin()->GetActionPlayer(); }
     const IPlayer * GetActionPlayer() const { return GetRoundAdmin()->GetActionPlayer(); }
     IPlayer *& GetsmallBlind() { return GetRoundAdmin()->GetsmallBlind(); }
@@ -51,11 +48,16 @@ class DeskAdmin : public IDeskAdmin{
     const IPlayer * Getraiser() const { return GetRoundAdmin()->Getraiser(); }
     IPlayer *& GetfirstPlayer() { return GetRoundAdmin()->GetfirstPlayer(); }
     const IPlayer * GetfirstPlayer() const { return GetRoundAdmin()->GetfirstPlayer(); }
+    Players & GetonDesk() { return GetRoundAdmin()->GetonDesk(); }
+    const Players GetonDesk() const { return GetRoundAdmin()->GetonDesk(); }
+    //Players & GetonDesk() { return m_onDesk; }
+    //const Players GetonDesk() const { return m_onDesk; }
+
     Players::iterator m_roundsFirstPlayer;
     const Players *m_players;
     IJudger *m_judger;
     Players::const_iterator m_D_player;
-    Players *m_onDesk;
+    Players m_onDesk;
     Cards m_pubCards;
     std::map<IPlayer*,const Cards*> m_inhands;
     RoundAdmin* m_roundAdmin;
@@ -79,9 +81,7 @@ class DeskAdmin : public IDeskAdmin{
       //return m_currentPlayer; 
     }
     void Next_OnDesk() { 
-      ++GetCurrentPlayer();
-      if(GetCurrentPlayer() == m_onDesk->end())
-	GetCurrentPlayer() = m_onDesk->begin();
+      GetRoundAdmin()->Next_OnDesk();
     };
 };
 #endif

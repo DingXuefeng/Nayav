@@ -40,8 +40,8 @@ void DeskAdmin::RoundInitialize() {
   GetRoundBet() = 0;
   Getraiser() = NULL;
   GetCurrentPlayer() = m_roundsFirstPlayer;
-  for(Players::iterator on_deskIt = m_onDesk->begin();
-      on_deskIt != m_onDesk->end(); on_deskIt++)
+  for(Players::iterator on_deskIt = GetonDesk().begin();
+      on_deskIt != GetonDesk().end(); on_deskIt++)
     (*on_deskIt)->Initialize();
   cout<<"--------------------------New round.: <"<<CardTool::GetRoundName(m_round)<<
     ">-------------------------"<<endl;
@@ -62,8 +62,8 @@ void DeskAdmin::RoundLoop(const int num_pub) {
 }
 
 void DeskAdmin::SendInhand() {
-  for(Players::iterator on_deskIt = m_onDesk->begin();
-      on_deskIt != m_onDesk->end(); on_deskIt++) {
+  for(Players::iterator on_deskIt = GetonDesk().begin();
+      on_deskIt != GetonDesk().end(); on_deskIt++) {
     (*on_deskIt)->Initialize();
     Cards * cards = new Cards;
     cards->push_back(Deck::GetRandom());
@@ -89,20 +89,20 @@ void DeskAdmin::FirstRoundLoop() {
 #include "RoundAdmin.h"
 void DeskAdmin::NewRounds() {
   cout<<"=============================New rounds.==========================="<<endl;
+  m_roundAdmin = new RoundAdmin(this);
+  m_roundAdmin->AddPlayers(*m_players);
+  m_roundAdmin->GetD_player() = (*m_D_player);
+  m_roundAdmin->Initialize();
   Deck::Flush(); // initialize deck
   m_pubCards.clear(); // initialize pub cards
   m_inhands.clear(); // initialize in hand cards
-  m_pool = 0; // pool to zero
-  m_roundAdmin = new RoundAdmin(this);
-  m_roundAdmin->AddPlayers(*m_players);
-  m_roundAdmin->SetDPlayer(*m_D_player);
-  m_roundAdmin->Initialize();
+  Getpool() = 0; // pool to zero
   // initialize player on desk
-  m_onDesk = new Players;
-  Players::iterator on_deskIt = m_onDesk->begin();
+  GetonDesk().clear();
+  Players::iterator on_deskIt = GetonDesk().begin();
   Players::const_iterator playersIt = m_players->begin();
   for(;playersIt != m_players->end(); ++playersIt) {
-    m_onDesk->push_back((*playersIt)->Clone());
+    GetonDesk().push_back((*playersIt)->Clone());
     ++on_deskIt; (*on_deskIt)->Initialize();
     if(playersIt == m_D_player) GetCurrentPlayer() = on_deskIt;
   }
@@ -128,7 +128,7 @@ void DeskAdmin::NewRounds() {
 
   for(Players::const_iterator winnersIt = GetJudger()->GetWinners().begin();
       winnersIt != GetJudger()->GetWinners().end(); ++winnersIt)
-    (*winnersIt)->Win(m_pool/(GetJudger()->GetWinners().size()));
+    (*winnersIt)->Win(Getpool()/(GetJudger()->GetWinners().size()));
 
   Show(m_pubCards,m_inhands);
 }
@@ -147,75 +147,19 @@ void DeskAdmin::RaiseLoop() {
 }
 
 void DeskAdmin::RecordStatus() {
-  GetActionPlayer() = *GetCurrentPlayer(); m_tmp_roundBet = GetRoundBet();
-  m_tmp_money = GetActionPlayer()->GetMoney();
-  m_tmp_bet = GetActionPlayer()->GetBet();
-  m_tmp_pool = m_pool;
+  GetRoundAdmin()->RecordStatus();
 }
 
-#include <chrono>
-#include <thread>
 void DeskAdmin::ShowStatus() {
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
-  printf("Player [%8s] $ (%4d) => (%4d), Bet $ (%4d) => (%4d) \
-      Round Bet $ (%4d) => (%4d) Bet Pool (%4d) => (%4d)\n",
-      GetActionPlayer()->GetName(),
-      m_tmp_money,GetActionPlayer()->GetMoney(),
-      m_tmp_bet,GetActionPlayer()->GetBet(),
-      m_tmp_roundBet,GetRoundBet(),
-      m_tmp_pool,m_pool);
+  GetRoundAdmin()->ShowStatus();
 }
 
 const bool DeskAdmin::IsBlind() const {
-  return ((GetActionPlayer()==GetsmallBlind())||(GetActionPlayer()==GetbigBlind()));
+  return GetRoundAdmin()->IsBlind();
 }
 
 void DeskAdmin::PlayerAction() {
-  RecordStatus();
-  if(IsBlind()) {
-    GetActionPlayer()->Raise(GetBlind());
-    if(GetActionPlayer()==GetsmallBlind()) GetsmallBlind() = NULL;
-    if(GetActionPlayer()==GetbigBlind()) GetbigBlind() = NULL;
-    Getraiser() = NULL;
-    cout<<" Bl Rs ";
-  } else {
-    IPlayer::Action action = GetActionPlayer()->GetAction();
-    switch(action) {
-      case IPlayer::fold:
-	{
-	  // record raiser & first
-	  Players::const_iterator validPlayer = GetCurrentPlayer();
-	  ++validPlayer;
-	  if(!*validPlayer)
-	    ++validPlayer;
-	  if(GetfirstPlayer() == GetActionPlayer())
-	    GetfirstPlayer() = *validPlayer;
-	  if(Getraiser() == GetActionPlayer())
-	    Getraiser() = *validPlayer;
-	  // pointer move
-	  Players::iterator quiter = GetCurrentPlayer();
-	  --GetCurrentPlayer();
-	  if(!*GetCurrentPlayer())
-	    --GetCurrentPlayer();
-	  // remove from desk
-	  m_onDesk->erase(quiter); 
-	}
-	cout<<" Fold  ";
-	break;
-      case IPlayer::call:
-	GetActionPlayer()->Call();
-	cout<<" Call  ";
-	break;
-      case IPlayer::raise:
-	GetActionPlayer()->Raise(GetActionPlayer()->GetRaisedMoney());
-	cout<<" Raise ";
-	break;
-      default:
-	break;
-    }
-  }
-  ShowStatus();
-  Next_OnDesk();
+  GetRoundAdmin()->PlayerAction();
 }
 
 void DeskAdmin::Show(const Cards& m_pubCards, 
