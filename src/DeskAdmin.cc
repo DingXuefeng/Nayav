@@ -3,7 +3,7 @@
 using namespace std;
 #include "Deck.h"
 void DeskAdmin::Raise(IPlayer* raiser, const int raise) { 
-  m_raiser = raiser; m_roundBet += raise; 
+  Getraiser() = raiser; GetRoundBet() += raise; 
 }
 
 void DeskAdmin::StartNewDesk() {
@@ -37,8 +37,8 @@ void DeskAdmin::StartNewDesk() {
 
 #include "CardTool.h"
 void DeskAdmin::RoundInitialize() {
-  m_roundBet = 0;
-  m_raiser = NULL;
+  GetRoundBet() = 0;
+  Getraiser() = NULL;
   GetCurrentPlayer() = m_roundsFirstPlayer;
   for(Players::iterator on_deskIt = m_onDesk->begin();
       on_deskIt != m_onDesk->end(); on_deskIt++)
@@ -49,7 +49,7 @@ void DeskAdmin::RoundInitialize() {
 
 void DeskAdmin::Loop() {
   CheckLoop();
-  if(m_raiser) RaiseLoop();
+  if(Getraiser()) RaiseLoop();
   ++m_round;
   cout<<"---------------------------------End-------------------------------"<<endl;
 }
@@ -109,10 +109,10 @@ void DeskAdmin::NewRounds() {
 
   Next_OnDesk();
   m_roundsFirstPlayer = GetCurrentPlayer();
-  m_smallBlind = *GetCurrentPlayer();
+  GetsmallBlind() = *GetCurrentPlayer();
   Next_OnDesk();
-  m_bigBlind = *GetCurrentPlayer();
-  //cout<<" small: "<<m_smallBlind->GetName()<<" big: "<<m_bigBlind->GetName()<<endl;
+  GetbigBlind() = *GetCurrentPlayer();
+  //cout<<" small: "<<GetsmallBlind()->GetName()<<" big: "<<GetbigBlind()->GetName()<<endl;
 
   m_round = pre_flop; // initialize m_round
 
@@ -134,16 +134,16 @@ void DeskAdmin::NewRounds() {
 }
 
 void DeskAdmin::CheckLoop() {
-  m_firstPlayer = *GetCurrentPlayer();
+  GetfirstPlayer() = *GetCurrentPlayer();
   do {
     PlayerAction();
-  } while((*GetCurrentPlayer()!=m_firstPlayer)&&!m_raiser);
+  } while((*GetCurrentPlayer()!=GetfirstPlayer())&&!Getraiser());
 }
 
 void DeskAdmin::RaiseLoop() {
   do {
     PlayerAction();
-  } while(*GetCurrentPlayer()!=m_raiser);
+  } while(*GetCurrentPlayer()!=Getraiser());
 }
 
 void DeskAdmin::RecordStatus() {
@@ -167,16 +167,16 @@ void DeskAdmin::ShowStatus() {
 }
 
 const bool DeskAdmin::IsBlind() const {
-  return ((GetActionPlayer()==m_smallBlind)||(GetActionPlayer()==m_bigBlind));
+  return ((GetActionPlayer()==GetsmallBlind())||(GetActionPlayer()==GetbigBlind()));
 }
 
 void DeskAdmin::PlayerAction() {
   RecordStatus();
   if(IsBlind()) {
     GetActionPlayer()->Raise(GetBlind());
-    if(GetActionPlayer()==m_smallBlind) m_smallBlind = NULL;
-    if(GetActionPlayer()==m_bigBlind) m_bigBlind = NULL;
-    m_raiser = NULL;
+    if(GetActionPlayer()==GetsmallBlind()) GetsmallBlind() = NULL;
+    if(GetActionPlayer()==GetbigBlind()) GetbigBlind() = NULL;
+    Getraiser() = NULL;
     cout<<" Bl Rs ";
   } else {
     IPlayer::Action action = GetActionPlayer()->GetAction();
@@ -188,10 +188,10 @@ void DeskAdmin::PlayerAction() {
 	  ++validPlayer;
 	  if(!*validPlayer)
 	    ++validPlayer;
-	  if(m_firstPlayer == GetActionPlayer())
-	    m_firstPlayer = *validPlayer;
-	  if(m_raiser == GetActionPlayer())
-	    m_raiser = *validPlayer;
+	  if(GetfirstPlayer() == GetActionPlayer())
+	    GetfirstPlayer() = *validPlayer;
+	  if(Getraiser() == GetActionPlayer())
+	    Getraiser() = *validPlayer;
 	  // pointer move
 	  Players::iterator quiter = GetCurrentPlayer();
 	  --GetCurrentPlayer();

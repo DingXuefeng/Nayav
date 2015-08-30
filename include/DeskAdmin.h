@@ -22,7 +22,8 @@ class DeskAdmin : public IDeskAdmin{
       const_cast<Players*>(m_players)->push_back(player); 
     };
     void StartNewDesk();
-    const int GetRoundBet() const { return m_roundBet; }
+    int& GetRoundBet() { return GetRoundAdmin()->GetRoundBet(); }
+    const int GetRoundBet() const { return GetRoundAdmin()->GetRoundBet(); }
     void Raise(IPlayer* raiser, const int raise);
     void NewRounds();
     void AddBet(const int bet) { m_pool += bet; }
@@ -40,15 +41,17 @@ class DeskAdmin : public IDeskAdmin{
     int m_tmp_pool;
     int m_round;
     int m_pool;
-    IPlayer *m_actionPlayer;
-    IPlayer *& GetActionPlayer() { return m_actionPlayer; }
-    const IPlayer * GetActionPlayer() const { return m_actionPlayer; }
-    IPlayer *m_smallBlind;
-    IPlayer *m_bigBlind;
-    IPlayer *m_firstPlayer;
+    IPlayer *& GetActionPlayer() { return GetRoundAdmin()->GetActionPlayer(); }
+    const IPlayer * GetActionPlayer() const { return GetRoundAdmin()->GetActionPlayer(); }
+    IPlayer *& GetsmallBlind() { return GetRoundAdmin()->GetsmallBlind(); }
+    const IPlayer * GetsmallBlind() const { return GetRoundAdmin()->GetsmallBlind(); }
+    IPlayer *& GetbigBlind() { return GetRoundAdmin()->GetbigBlind(); }
+    const IPlayer * GetbigBlind() const { return GetRoundAdmin()->GetbigBlind(); }
+    IPlayer *& Getraiser() { return GetRoundAdmin()->Getraiser(); }
+    const IPlayer * Getraiser() const { return GetRoundAdmin()->Getraiser(); }
+    IPlayer *& GetfirstPlayer() { return GetRoundAdmin()->GetfirstPlayer(); }
+    const IPlayer * GetfirstPlayer() const { return GetRoundAdmin()->GetfirstPlayer(); }
     Players::iterator m_roundsFirstPlayer;
-    IPlayer *m_raiser;
-    int m_roundBet;
     const Players *m_players;
     IJudger *m_judger;
     Players::const_iterator m_D_player;
@@ -58,7 +61,8 @@ class DeskAdmin : public IDeskAdmin{
     RoundAdmin* m_roundAdmin;
 
   private:
-    RoundAdmin* GetRoundAdmin() const { return m_roundAdmin; }
+    const RoundAdmin* GetRoundAdmin() const { return m_roundAdmin; }
+    RoundAdmin*& GetRoundAdmin() { return m_roundAdmin; }
     void RoundInitialize();
     void SendInhand();
     void FirstRoundLoop();
