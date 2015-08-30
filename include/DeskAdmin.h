@@ -27,7 +27,7 @@ class DeskAdmin : public IDeskAdmin{
   private:
     void CheckLoop();
     void RaiseLoop();
-    void RoundLoop();
+    void Loop();
     void PlayerAction();
     void RecordStatus();
     void ShowStatus();
@@ -44,9 +44,14 @@ class DeskAdmin : public IDeskAdmin{
     IJudger *m_judger;
     Players::const_iterator m_D_player;
     Players *m_onDesk;
+    Cards m_pubCards;
+    std::map<IPlayer*,const Cards*> m_inhands;
 
   private:
     void RoundInitialize();
+    void SendInhand();
+    void FirstRoundLoop();
+    void RoundLoop(const int num_pub = 1);
     DeskAdmin() : m_players(new Players), m_judger(new Judger) {};
     friend class Eimer;
     IJudger* GetJudger() const { return m_judger; };
