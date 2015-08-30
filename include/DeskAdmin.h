@@ -22,14 +22,11 @@ class DeskAdmin : public IDeskAdmin{
       const_cast<Players*>(m_players)->push_back(player); 
     };
     void StartNewDesk();
-    void Raise(IPlayer* raiser, const int raise);
     void NewRounds();
     void AddBet(const int bet) { Getpool() += bet; }
+    void Raise(IPlayer* raiser, const int raise);
   private:
     void Loop();
-    void PlayerAction();
-    void RecordStatus();
-    void ShowStatus();
     int& Getround() { return GetRoundAdmin()->Getround(); }
     int& GetRoundBet() { return GetRoundAdmin()->GetRoundBet(); }
     const int GetRoundBet() const { return GetRoundAdmin()->GetRoundBet(); }
@@ -41,10 +38,6 @@ class DeskAdmin : public IDeskAdmin{
     const IPlayer * GetsmallBlind() const { return GetRoundAdmin()->GetsmallBlind(); }
     IPlayer *& GetbigBlind() { return GetRoundAdmin()->GetbigBlind(); }
     const IPlayer * GetbigBlind() const { return GetRoundAdmin()->GetbigBlind(); }
-    IPlayer *& Getraiser() { return GetRoundAdmin()->Getraiser(); }
-    const IPlayer * Getraiser() const { return GetRoundAdmin()->Getraiser(); }
-    IPlayer *& GetfirstPlayer() { return GetRoundAdmin()->GetfirstPlayer(); }
-    const IPlayer * GetfirstPlayer() const { return GetRoundAdmin()->GetfirstPlayer(); }
     Players & GetonDesk() { return GetRoundAdmin()->GetonDesk(); }
     const Players GetonDesk() const { return GetRoundAdmin()->GetonDesk(); }
     //Players & GetonDesk() { return m_onDesk; }

@@ -2,8 +2,9 @@
 #include "DeskAdmin.h"
 using namespace std;
 #include "Deck.h"
+
 void DeskAdmin::Raise(IPlayer* raiser, const int raise) { 
-  Getraiser() = raiser; GetRoundBet() += raise; 
+  GetRoundAdmin()->Raise(raiser,raise);
 }
 
 void DeskAdmin::StartNewDesk() {
@@ -38,7 +39,6 @@ void DeskAdmin::StartNewDesk() {
 #include "CardTool.h"
 void DeskAdmin::RoundInitialize() {
   GetRoundBet() = 0;
-  Getraiser() = NULL;
   GetCurrentPlayer() = GetroundsFirstPlayer();
   for(Players::iterator on_deskIt = GetonDesk().begin();
       on_deskIt != GetonDesk().end(); on_deskIt++)
@@ -105,22 +105,6 @@ void DeskAdmin::NewRounds() {
     (*winnersIt)->Win(Getpool()/(GetJudger()->GetWinners().size()));
 
   Show(m_pubCards,m_inhands);
-}
-
-void DeskAdmin::RecordStatus() {
-  GetRoundAdmin()->RecordStatus();
-}
-
-void DeskAdmin::ShowStatus() {
-  GetRoundAdmin()->ShowStatus();
-}
-
-const bool DeskAdmin::IsBlind() const {
-  return GetRoundAdmin()->IsBlind();
-}
-
-void DeskAdmin::PlayerAction() {
-  GetRoundAdmin()->PlayerAction();
 }
 
 void DeskAdmin::Show(const Cards& m_pubCards, 

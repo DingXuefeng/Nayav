@@ -14,4 +14,10 @@ IPlayer* Nayav::New(const char* name) {
 #include "Player.h"
 IPlayer::Action Nayav::GetAction() const {
   return call;
+  if(GetDeskAdmin()->GetRoundBet()<50)
+    return raise;
+  else if(GetDeskAdmin()->GetRoundBet()>200)
+    return fold;
+  else
+    return call;
 }
