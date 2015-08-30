@@ -78,7 +78,10 @@ class DeskAdmin : public IDeskAdmin{
     const int GetBlind() const { return 10; };
     Players::iterator& GetCurrentPlayer() { 
       return GetRoundAdmin()->GetCurrentPlayer();
-      //return m_currentPlayer; 
+    }
+    Players::iterator& GetroundsFirstPlayer() { 
+      return m_roundsFirstPlayer;
+//      return GetRoundAdmin()->GetCurrentPlayer();
     }
     void Next_OnDesk() { 
       GetRoundAdmin()->Next_OnDesk();

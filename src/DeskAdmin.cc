@@ -39,7 +39,7 @@ void DeskAdmin::StartNewDesk() {
 void DeskAdmin::RoundInitialize() {
   GetRoundBet() = 0;
   Getraiser() = NULL;
-  GetCurrentPlayer() = m_roundsFirstPlayer;
+  GetCurrentPlayer() = GetroundsFirstPlayer();
   for(Players::iterator on_deskIt = GetonDesk().begin();
       on_deskIt != GetonDesk().end(); on_deskIt++)
     (*on_deskIt)->Initialize();
@@ -97,18 +97,8 @@ void DeskAdmin::NewRounds() {
   m_pubCards.clear(); // initialize pub cards
   m_inhands.clear(); // initialize in hand cards
   Getpool() = 0; // pool to zero
-  // initialize player on desk
-  GetonDesk().clear();
-  Players::iterator on_deskIt = GetonDesk().begin();
-  Players::const_iterator playersIt = m_players->begin();
-  for(;playersIt != m_players->end(); ++playersIt) {
-    GetonDesk().push_back((*playersIt)->Clone());
-    ++on_deskIt; (*on_deskIt)->Initialize();
-    if(playersIt == m_D_player) GetCurrentPlayer() = on_deskIt;
-  }
 
-  Next_OnDesk();
-  m_roundsFirstPlayer = GetCurrentPlayer();
+  GetroundsFirstPlayer() = GetCurrentPlayer();
   GetsmallBlind() = *GetCurrentPlayer();
   Next_OnDesk();
   GetbigBlind() = *GetCurrentPlayer();
