@@ -54,9 +54,7 @@ void DeskAdmin::Loop() {
   cout<<"---------------------------------End-------------------------------"<<endl;
 }
 
-#include "RoundAdmin.h"
 void DeskAdmin::RoundLoop(const int num_pub) {
-  //m_roundAdmin->NewRound();
   for(int i = 0;i<num_pub;i++)
     m_pubCards.push_back(Deck::GetRandom());
   RoundInitialize();
@@ -88,6 +86,7 @@ void DeskAdmin::FirstRoundLoop() {
 
 #include "IJudger.h"
 #include <list>
+#include "RoundAdmin.h"
 void DeskAdmin::NewRounds() {
   cout<<"=============================New rounds.==========================="<<endl;
   Deck::Flush(); // initialize deck
@@ -96,6 +95,8 @@ void DeskAdmin::NewRounds() {
   m_pool = 0; // pool to zero
   m_roundAdmin = new RoundAdmin(this);
   m_roundAdmin->AddPlayers(*m_players);
+  m_roundAdmin->SetDPlayer(*m_D_player);
+  m_roundAdmin->Initialize();
   // initialize player on desk
   m_onDesk = new Players;
   Players::iterator on_deskIt = m_onDesk->begin();

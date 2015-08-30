@@ -68,6 +68,7 @@ class DeskAdmin : public IDeskAdmin{
     void Show(const Cards& pub,const std::map<IPlayer*,const Cards*>&) const;
     const bool IsBlind() const;
     const int GetBlind() const { return 10; };
+    Players::iterator GetCurrentPlayer() const { return m_currentPlayer; }
     void Next_OnDesk() { 
       ++m_currentPlayer;
       if(m_currentPlayer == m_onDesk->end())
