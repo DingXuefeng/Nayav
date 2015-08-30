@@ -12,6 +12,7 @@
 #include <iostream>
 #include <limits>
 #include "shellUI.h"
+#include "Messenger.h"
 using namespace std;
 class Human : public Player{
   public:

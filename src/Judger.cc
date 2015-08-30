@@ -48,6 +48,7 @@ void Judger::SendCards() {
   }
 }
 
+#include "Messenger.h"
 void Judger::Sendinhands() {
   for(Players::const_iterator on_deskIt = GetonDesk().begin();
       on_deskIt != GetonDesk().end(); on_deskIt++) {
@@ -55,12 +56,23 @@ void Judger::Sendinhands() {
     cards->push_back(Deck::GetRandom());
     cards->push_back(Deck::GetRandom());
     Getinhands()[*on_deskIt] = const_cast<const Cards*>(cards);
+    char message[255];
+    sprintf(message,"You get in hands: [%3s] [%3s]",
+	CardTool::GetName((cards->at(0))),CardTool::GetName((cards->at(1))));
+    Messenger::Get()->Notify(*on_deskIt,message);
   }
 }
 
+#include <sstream>
+#include <string>
 void Judger::SendpubCards(int num_pub) {
-  for(int i = 0;i<num_pub;i++)
+  char message[255];
+  sprintf(message,"You get pub cards: ");
+  for(int i = 0;i<num_pub;i++) {
     GetpubCards().push_back(Deck::GetRandom());
+    sprintf(message+19+i*8,"[%3s] ",CardTool::GetName(GetpubCards().back()));
+  }
+  Messenger::Get()->Notify(message);
 }
 
 void Judger::Show() const {

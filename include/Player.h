@@ -15,6 +15,7 @@
 #include <cstring>
 #include "IDeskAdmin.h"
 #include <iostream>
+#include "Messenger.h"
 using std::cout;
 using std::endl;
 class Player : public IPlayer {
@@ -64,6 +65,7 @@ class Player : public IPlayer {
       m_money(money),m_bet(0),m_allowSave(allowSave),m_saved(saved) {
 	m_name = new char[30];
 	memcpy(m_name,name,30);
+	Messenger::Add(this);
       };
     friend class Human;
     friend class Nayav;
