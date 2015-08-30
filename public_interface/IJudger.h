@@ -10,10 +10,13 @@
 #define IJudger_H
 #include "Card.h"
 #include <vector>
-class IPlayer;
+#include "IPlayer.h"
 #include <map>
 class IJudger{
   public:
-    virtual IPlayer* Judge(const Cards &pub,const std::map<IPlayer*,const Cards*>&) = 0;
+    virtual const Players& Judge(const Cards &pub,const Inhands&) = 0;
+    virtual const std::map<IPlayer*,int>& GetMarks() const = 0;
+    virtual int GetWinnerRank() const = 0;
+    virtual const Players& GetWinners() const = 0;
 };
 #endif

@@ -15,6 +15,14 @@
 class User;
 class Judger : public IJudger{
   public:
-    IPlayer* Judge(const Cards &pub,const Inhands&);
+    const Players& Judge(const Cards &pub,const Inhands&);
+    const std::map<IPlayer*,int>& GetMarks() const { return m_marks; }
+    int GetWinnerRank() const { return m_winnerRank; }
+    const Players& GetWinners() const { return m_winner; }
+  private:
+    Inhands m_fullInhands;
+    std::map<IPlayer*,int> m_marks;
+    int m_winnerRank;
+    Players m_winner;
 };
 #endif

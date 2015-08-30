@@ -116,15 +116,10 @@ void DeskAdmin::NewRounds() {
   RoundLoop(); // rive round
 
   // show cards
-  Show(m_pubCards,m_inhands);
-
-  // get result
   IJudger* judger = GetJudger();
-  IPlayer* winner = judger->Judge(m_pubCards,m_inhands);
-  if(winner)
-    printf("winner is : [%s]\n",winner->GetName());
-  else
-    printf("fair!\n");
+  judger->Judge(m_pubCards,m_inhands);
+
+  Show(m_pubCards,m_inhands);
 }
 
 void DeskAdmin::CheckLoop() {
@@ -223,6 +218,10 @@ void DeskAdmin::Show(const Cards& m_pubCards,
     for(size_t i = 0;i<m_pubCards.size();i++) {
       cout<<"["<<CardTool::GetName(m_pubCards[i])<<"] ";
     }
-    cout<<")"<<endl;
+    if(GetJudger()->GetWinnerRank() == GetJudger()->GetMarks().at(m_inhandsIt->first))
+      cout<<") [Win! ] : <";
+    else
+      cout<<") [Loose] : <";
+    cout<<CardTool::ToType(GetJudger()->GetMarks().at(m_inhandsIt->first))<<">"<<endl;
   }
 }
