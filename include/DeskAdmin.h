@@ -40,10 +40,11 @@ class DeskAdmin : public IDeskAdmin{
     const IPlayer * GetbigBlind() const { return GetRoundAdmin()->GetbigBlind(); }
     Players & GetonDesk() { return GetRoundAdmin()->GetonDesk(); }
     const Players GetonDesk() const { return GetRoundAdmin()->GetonDesk(); }
-    //Players & GetonDesk() { return m_onDesk; }
-    //const Players GetonDesk() const { return m_onDesk; }
+    const Cards& GetpubCards() const { return m_pubCards; }
+    Cards& GetpubCards() { return m_pubCards; }
+    const Inhands& Getinhands() const { return m_inhands; }
+    Inhands& Getinhands() { return m_inhands; }
 
-    Players::iterator m_roundsFirstPlayer;
     const Players *m_players;
     IJudger *m_judger;
     Players::const_iterator m_D_player;
@@ -63,7 +64,7 @@ class DeskAdmin : public IDeskAdmin{
     friend class Eimer;
     IJudger* GetJudger() const { return m_judger; };
     void SetJudger(IJudger* judger) { m_judger = judger; }
-    void Show(const Cards& pub,const std::map<IPlayer*,const Cards*>&) const;
+    void Show() const;
     const bool IsBlind() const;
     const int GetBlind() const { return 10; };
     Players::iterator& GetCurrentPlayer() { 

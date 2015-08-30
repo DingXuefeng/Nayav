@@ -19,7 +19,16 @@ class Judger : public IJudger{
     const std::map<IPlayer*,int>& GetMarks() const { return m_marks; }
     int GetWinnerRank() const { return m_winnerRank; }
     const Players& GetWinners() const { return m_winner; }
+    void SendInhand();
+    void SendPubcards();
+    const Cards& GetpubCards() const { return m_pubCards; }
+    Cards& GetpubCards() { return m_pubCards; }
+    const Inhands& Getinhands() const { return m_inhands; }
+    Inhands& Getinhands() { return m_inhands; }
   private:
+    Cards m_pubCards;
+    Inhands m_inhands;
+
     Inhands m_fullInhands;
     std::map<IPlayer*,int> m_marks;
     int m_winnerRank;

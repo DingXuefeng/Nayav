@@ -38,25 +38,13 @@ void DeskAdmin::StartNewDesk() {
 
 #include "CardTool.h"
 void DeskAdmin::RoundInitialize() {
-  GetRoundBet() = 0;
-  GetCurrentPlayer() = GetroundsFirstPlayer();
-  for(Players::iterator on_deskIt = GetonDesk().begin();
-      on_deskIt != GetonDesk().end(); on_deskIt++)
-    (*on_deskIt)->Initialize();
-  cout<<"--------------------------New round.: <"<<CardTool::GetRoundName(Getround())<<
-    ">-------------------------"<<endl;
+  GetRoundAdmin()->InitializeSingleRound();
 }
 
 void DeskAdmin::Loop() {
   GetRoundAdmin()->Loop();
 }
 
-void DeskAdmin::RoundLoop(const int num_pub) {
-  for(int i = 0;i<num_pub;i++)
-    m_pubCards.push_back(Deck::GetRandom());
-  RoundInitialize();
-  Loop();
-}
 
 void DeskAdmin::SendInhand() {
   for(Players::iterator on_deskIt = GetonDesk().begin();
@@ -65,14 +53,18 @@ void DeskAdmin::SendInhand() {
     Cards * cards = new Cards;
     cards->push_back(Deck::GetRandom());
     cards->push_back(Deck::GetRandom());
-    m_inhands[*on_deskIt] = const_cast<const Cards*>(cards);
+    Getinhands()[*on_deskIt] = const_cast<const Cards*>(cards);
   }
 }
 
 void DeskAdmin::FirstRoundLoop() {
   SendInhand();
-  RoundInitialize();
-  GetRoundAdmin()->BlindAction();
+  Loop();
+}
+
+void DeskAdmin::RoundLoop(const int num_pub) {
+  for(int i = 0;i<num_pub;i++)
+    m_pubCards.push_back(Deck::GetRandom());
   Loop();
 }
 
@@ -88,7 +80,7 @@ void DeskAdmin::NewRounds() {
 
   Deck::Flush(); // initialize deck
   m_pubCards.clear(); // initialize pub cards
-  m_inhands.clear(); // initialize in hand cards
+  Getinhands().clear(); // initialize in hand cards
 
   // start 4 rounds
   FirstRoundLoop(); // pre-flop round
@@ -98,33 +90,32 @@ void DeskAdmin::NewRounds() {
 
   // show cards
   IJudger* judger = GetJudger();
-  judger->Judge(m_pubCards,m_inhands);
+  judger->Judge(m_pubCards,Getinhands());
 
   for(Players::const_iterator winnersIt = GetJudger()->GetWinners().begin();
       winnersIt != GetJudger()->GetWinners().end(); ++winnersIt)
     (*winnersIt)->Win(Getpool()/(GetJudger()->GetWinners().size()));
 
-  Show(m_pubCards,m_inhands);
+  Show();
 }
 
-void DeskAdmin::Show(const Cards& m_pubCards, 
-    const std::map<IPlayer*,const Cards*> &m_inhands) const {
+void DeskAdmin::Show() const {
   cout<<endl;
-  for(Inhands::const_iterator m_inhandsIt = m_inhands.begin();
-      m_inhandsIt != m_inhands.end(); ++m_inhandsIt ){
-    printf("Player [%8ss] [-->",m_inhandsIt->first->GetName());
-    for(Cards::const_iterator cardsIt = m_inhandsIt->second->begin();
-	cardsIt != m_inhandsIt->second->end(); cardsIt++) {
+  for(Inhands::const_iterator inhandsIt = Getinhands().begin();
+      inhandsIt != Getinhands().end(); ++inhandsIt ){
+    printf("Player [%8ss] [-->",inhandsIt->first->GetName());
+    for(Cards::const_iterator cardsIt = inhandsIt->second->begin();
+	cardsIt != inhandsIt->second->end(); cardsIt++) {
       cout<<"["<<CardTool::GetName(*cardsIt)<<"] ";
     }
     cout<<" <--] pub --> ( ";
     for(size_t i = 0;i<m_pubCards.size();i++) {
       cout<<"["<<CardTool::GetName(m_pubCards[i])<<"] ";
     }
-    if(GetJudger()->GetWinnerRank() == GetJudger()->GetMarks().at(m_inhandsIt->first))
+    if(GetJudger()->GetWinnerRank() == GetJudger()->GetMarks().at(inhandsIt->first))
       cout<<") [Win! ] : <";
     else
       cout<<") [Loose] : <";
-    cout<<CardTool::ToType(GetJudger()->GetMarks().at(m_inhandsIt->first))<<">"<<endl;
+    cout<<CardTool::ToType(GetJudger()->GetMarks().at(inhandsIt->first))<<">"<<endl;
   }
 }
