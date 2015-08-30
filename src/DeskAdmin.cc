@@ -36,42 +36,9 @@ void DeskAdmin::StartNewDesk() {
   }
 }
 
-#include "CardTool.h"
-void DeskAdmin::RoundInitialize() {
-  GetRoundAdmin()->InitializeSingleRound();
-}
-
-void DeskAdmin::Loop() {
-  GetRoundAdmin()->Loop();
-}
-
-void DeskAdmin::SendCards() {
+void DeskAdmin::RoundLoop() {
   GetJudger()->SendCards();
-}
-
-
-void DeskAdmin::SendInhand() {
-  for(Players::iterator on_deskIt = GetonDesk().begin();
-      on_deskIt != GetonDesk().end(); on_deskIt++) {
-    (*on_deskIt)->Initialize();
-    Cards * cards = new Cards;
-    cards->push_back(Deck::GetRandom());
-    cards->push_back(Deck::GetRandom());
-    Getinhands()[*on_deskIt] = const_cast<const Cards*>(cards);
-  }
-}
-
-void DeskAdmin::FirstRoundLoop() {
-  SendCards();
-  //SendInhand();
-  Loop();
-}
-
-void DeskAdmin::RoundLoop(const int num_pub) {
-  SendCards();
-  for(int i = 0;i<num_pub;i++)
-    GetpubCards().push_back(Deck::GetRandom());
-  Loop();
+  GetRoundAdmin()->Loop();
 }
 
 #include "IJudger.h"
@@ -89,8 +56,8 @@ void DeskAdmin::NewRounds() {
   Getinhands().clear(); // initialize in hand cards
 
   // start 4 rounds
-  FirstRoundLoop(); // pre-flop round
-  RoundLoop(3); // flop round
+  RoundLoop(); // pre flop round
+  RoundLoop(); // flop round
   RoundLoop(); // turn round
   RoundLoop(); // rive round
 

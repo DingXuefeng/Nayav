@@ -58,10 +58,7 @@ class DeskAdmin : public IDeskAdmin{
   private:
     const RoundAdmin* GetRoundAdmin() const { return m_roundAdmin; }
     RoundAdmin*& GetRoundAdmin() { return m_roundAdmin; }
-    void RoundInitialize();
-    void SendInhand();
-    void FirstRoundLoop();
-    void RoundLoop(const int num_pub = 1);
+    void RoundLoop();
     DeskAdmin() : m_players(new Players), m_judger(new Judger(this)) {};
     friend class Eimer;
     IJudger* GetJudger() const { return m_judger; };

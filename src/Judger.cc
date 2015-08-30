@@ -54,22 +54,20 @@ void Judger::Sendinhands() {
 }
 
 void Judger::SendpubCards(int num_pub) {
-  /*
   for(int i = 0;i<num_pub;i++)
     GetpubCards().push_back(Deck::GetRandom());
-    */
 }
 
 void Judger::Show() const {
   cout<<endl;
   for(Inhands::const_iterator inhandsIt = Getinhands().begin();
       inhandsIt != Getinhands().end(); ++inhandsIt ){
-    printf("Player [%8ss] [-->",inhandsIt->first->GetName());
+    printf("Player [%8ss] [ ",inhandsIt->first->GetName());
     for(Cards::const_iterator cardsIt = inhandsIt->second->begin();
 	cardsIt != inhandsIt->second->end(); ++cardsIt) {
       cout<<"["<<CardTool::GetName(*cardsIt)<<"] ";
     }
-    cout<<" <--] pub --> ( ";
+    cout<<"] pub --> ( ";
     for(size_t i = 0;i<GetpubCards().size(); ++i) {
       cout<<"["<<CardTool::GetName(GetpubCards()[i])<<"] ";
     }
