@@ -24,6 +24,7 @@ class DeskAdmin : public IDeskAdmin{
     const int GetRoundBet() const { return m_roundBet; }
     void Raise(IPlayer* raiser, const int raise);
     void NewRounds();
+    void AddBet(const int bet) { m_pool += bet; }
   private:
     void BlindAction();
     void CheckLoop();
@@ -35,7 +36,9 @@ class DeskAdmin : public IDeskAdmin{
     int m_tmp_roundBet;
     int m_tmp_money;
     int m_tmp_bet;
+    int m_tmp_pool;
     int m_round;
+    int m_pool;
     Players::iterator m_currentPlayer;
     IPlayer *m_actionPlayer;
     IPlayer *m_smallBlind;

@@ -21,6 +21,7 @@ class Player : public IPlayer {
   public:
     void Initialize() { m_bet = 0; };
     virtual Action GetAction() const = 0;
+    void Win(int money) { m_money += money; };
     virtual const int GetRaisedMoney() const = 0;
     const char* GetName() const { return m_name; };
     const int GetMoney() const { return m_money; };
@@ -28,6 +29,7 @@ class Player : public IPlayer {
     void Fold() const {};
     void Call() { 
       m_money -= GetDeskAdmin()->GetRoundBet()-GetBet(); 
+      GetDeskAdmin()->AddBet(GetDeskAdmin()->GetRoundBet()-GetBet());
       m_bet = GetDeskAdmin()->GetRoundBet(); 
     };
     void Raise(const int money) { 

@@ -24,6 +24,7 @@ class IPlayer {
     virtual void Initialize() = 0;
     virtual void JoinDesk(IDeskAdmin* deskadmin) = 0;
     virtual Action GetAction() const = 0;
+    virtual void Win(int money) = 0;
     virtual const int GetRaisedMoney() const = 0;
     virtual const char *GetName() const = 0;
     virtual const int GetMoney() const = 0;

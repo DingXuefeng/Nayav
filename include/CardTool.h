@@ -8,6 +8,7 @@
 
 #ifndef CardTool_H
 #define CardTool_H
+#include "IDeskAdmin.h"
 #include "Card.h"
 #include "stdio.h"
 #include <iostream>
@@ -17,6 +18,7 @@ class CardTool {
   public:
     static const char* GetNumberName(int number);
     static const char* GetName(Card card);
+    static const char* GetRoundName(const int round);
     static const std::string ToType(int rank);
     static const int Rank(const Cards &cards);
   private:

@@ -1,17 +1,5 @@
 #include "CardTool.h"
 #include <stdexcept>
-enum {
-  royal_straight_flush = 90000,
-  straight_flush = 80000,
-  four = 70000,
-  full_house = 60000,
-  flush = 50000,
-  straight = 40000,
-  three = 30000,
-  two_pair = 20000,
-  pair = 10000,
-  none = 0
-};
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -177,6 +165,21 @@ const int CardTool::IsPair(const Cards &cards,CardMasks& mask) {
 	    return cards[i]/4+1;
 	  }
   return 0;
+}
+
+const char* CardTool::GetRoundName(const int round) {
+  switch(round) {
+    case IDeskAdmin::pre_flop:
+      return "Pr F"; break;
+    case IDeskAdmin::flop:
+      return "Flop"; break;
+    case IDeskAdmin::turn:
+      return "Turn"; break;
+    case IDeskAdmin::river:
+      return "Rivr"; break;
+    default:
+      return "Err."; break;
+  }
 }
 
 const char* CardTool::GetName(Card card) {

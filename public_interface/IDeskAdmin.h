@@ -26,6 +26,7 @@ class IDeskAdmin{
     virtual void StartNewDesk() = 0;
     virtual const int GetRoundBet() const = 0;
     virtual void Raise(IPlayer* raiser, const int raise) = 0;
+    virtual void AddBet(const int bet) = 0;
     virtual const int GetBlind() const = 0;
   private:
     virtual IJudger* GetJudger() const = 0;

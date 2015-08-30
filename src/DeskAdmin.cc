@@ -3,7 +3,7 @@
 using namespace std;
 #include "Deck.h"
 void DeskAdmin::Raise(IPlayer* raiser, const int raise) { 
-  m_raiser = *m_currentPlayer; m_roundBet += raise; 
+  m_raiser = raiser; m_roundBet += raise; 
 }
 
 void DeskAdmin::StartNewDesk() {
@@ -35,6 +35,7 @@ void DeskAdmin::StartNewDesk() {
   }
 }
 
+#include "CardTool.h"
 void DeskAdmin::RoundInitialize() {
   m_roundBet = 0;
   m_raiser = NULL;
@@ -42,7 +43,8 @@ void DeskAdmin::RoundInitialize() {
   for(Players::iterator on_deskIt = m_onDesk->begin();
       on_deskIt != m_onDesk->end(); on_deskIt++)
     (*on_deskIt)->Initialize();
-  cout<<"-----------------------------New round.----------------------------"<<endl;
+  cout<<"--------------------------New round.: <"<<CardTool::GetRoundName(m_round)<<
+    ">-------------------------"<<endl;
 }
 
 void DeskAdmin::Loop() {
@@ -82,7 +84,6 @@ void DeskAdmin::FirstRoundLoop() {
   Loop();
 }
 
-#include "CardTool.h"
 #include "IJudger.h"
 #include <list>
 void DeskAdmin::NewRounds() {
@@ -90,6 +91,7 @@ void DeskAdmin::NewRounds() {
   Deck::Flush(); // initialize deck
   m_pubCards.clear(); // initialize pub cards
   m_inhands.clear(); // initialize in hand cards
+  m_pool = 0; // pool to zero
   // initialize player on desk
   m_onDesk = new Players;
   Players::iterator on_deskIt = m_onDesk->begin();
@@ -119,6 +121,10 @@ void DeskAdmin::NewRounds() {
   IJudger* judger = GetJudger();
   judger->Judge(m_pubCards,m_inhands);
 
+  for(Players::const_iterator winnersIt = GetJudger()->GetWinners().begin();
+      winnersIt != GetJudger()->GetWinners().end(); ++winnersIt)
+    (*winnersIt)->Win(m_pool/(GetJudger()->GetWinners().size()));
+
   Show(m_pubCards,m_inhands);
 }
 
@@ -139,6 +145,7 @@ void DeskAdmin::RecordStatus() {
   m_actionPlayer = *m_currentPlayer; m_tmp_roundBet = GetRoundBet();
   m_tmp_money = m_actionPlayer->GetMoney();
   m_tmp_bet = m_actionPlayer->GetBet();
+  m_tmp_pool = m_pool;
 }
 
 #include <chrono>
@@ -146,10 +153,12 @@ void DeskAdmin::RecordStatus() {
 void DeskAdmin::ShowStatus() {
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
   printf("Player [%8s] $ (%4d) => (%4d), Bet $ (%4d) => (%4d) \
-      Round Bet $ (%4d) => (%4d)\n",m_actionPlayer->GetName(),
+      Round Bet $ (%4d) => (%4d) Bet Pool (%4d) => (%4d)\n",
+      m_actionPlayer->GetName(),
       m_tmp_money,m_actionPlayer->GetMoney(),
       m_tmp_bet,m_actionPlayer->GetBet(),
-      m_tmp_roundBet,GetRoundBet());
+      m_tmp_roundBet,GetRoundBet(),
+      m_tmp_pool,m_pool);
 }
 
 const bool DeskAdmin::IsBlind() const {
