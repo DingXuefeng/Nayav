@@ -19,6 +19,8 @@ class IPlayer {
       allin
     };
   public:
+    virtual IPlayer* Clone() const = 0;
+  public:
     virtual void Initialize() = 0;
     virtual void JoinDesk(IDeskAdmin* deskadmin) = 0;
     virtual Action GetAction() const = 0;

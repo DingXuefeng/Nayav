@@ -18,18 +18,10 @@
 using std::cout;
 using std::endl;
 class Player : public IPlayer {
-  /*
-  public:
-    std::vector<Card*>* GetInhands() const { return m_inhands; };
-    const int GetMoney() const { return m_money; };
-    const bool GetAllowSave() const { return m_allowSave; };
-    const std::vector<Gift*>* CheckGift() const { return NULL; };
-    void AllocateGift(const int id) {};
-    */
   public:
     void Initialize() { m_bet = 0; };
-    virtual Action GetAction() const = 0;
-    virtual const int GetRaisedMoney() const = 0;
+    virtual Action GetAction() const { return fold; };
+    virtual const int GetRaisedMoney() const { return GetDeskAdmin()->GetBlind(); };
     const char* GetName() const { return m_name; };
     const int GetMoney() const { return m_money; };
     const int GetBet() const { return m_bet; };
@@ -46,6 +38,8 @@ class Player : public IPlayer {
       cout<<" Player "<<GetName()<<" $ "<<m_money<<" Bet $ "<<m_bet<<endl;
     }
 
+  public:
+    IPlayer* Clone() const { return new Player(GetMoney(),m_allowSave,m_saved,GetName()); }
   private:
 //    std::vector<Card*>* m_inhands;
     void JoinDesk(IDeskAdmin* deskadmin) { 
@@ -54,7 +48,7 @@ class Player : public IPlayer {
     };
     IDeskAdmin* GetDeskAdmin() const { return m_deskadmin; };
     IDeskAdmin* m_deskadmin;
-    char m_name[30];
+    char *m_name;
     int m_money;
     int m_bet;
     bool m_allowSave;
@@ -63,6 +57,7 @@ class Player : public IPlayer {
   private:
     Player(int money,bool allowSave,int saved,const char *name) : 
       m_money(money),m_bet(0),m_allowSave(allowSave),m_saved(saved) {
+	m_name = new char[30];
 	memcpy(m_name,name,30);
       };
     friend class Human;

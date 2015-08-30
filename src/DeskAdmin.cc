@@ -90,14 +90,11 @@ void DeskAdmin::NewRounds() {
   Players::iterator on_deskIt = m_onDesk->begin();
   Players::const_iterator playersIt = m_players->begin();
   for(;playersIt != m_players->end(); ++playersIt) {
-    m_onDesk->push_back(*playersIt);
+    m_onDesk->push_back((*playersIt)->Clone());
     ++on_deskIt; (*on_deskIt)->Initialize();
+    if(playersIt == m_D_player) m_currentPlayer = on_deskIt;
   }
 
-  // initialize first player, small blind player, big blind player
-  for(m_currentPlayer = m_onDesk->begin();
-      *m_currentPlayer != *m_D_player; ++m_currentPlayer) 
-    ;
   Next_OnDesk();
   m_roundsFirstPlayer = m_currentPlayer;
   m_smallBlind = *m_currentPlayer;
@@ -127,6 +124,8 @@ void DeskAdmin::NewRounds() {
 void DeskAdmin::CheckLoop() {
   m_firstPlayer = *m_currentPlayer;
   do {
+    cout<<"DEBUG "<<(*m_currentPlayer)<<endl;
+    cout<<"DEBUG "<<(*m_currentPlayer)->GetMoney()<<endl;
     cout<<"DEBUG "<<(*m_currentPlayer)<<endl;
     PlayerAction();
     cout<<"DEBUG "<<(*m_currentPlayer)<<endl;
