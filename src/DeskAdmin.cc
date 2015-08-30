@@ -39,7 +39,7 @@ void DeskAdmin::StartNewDesk() {
 void DeskAdmin::RoundInitialize() {
   m_roundBet = 0;
   m_raiser = NULL;
-  m_currentPlayer = m_roundsFirstPlayer;
+  GetCurrentPlayer() = m_roundsFirstPlayer;
   for(Players::iterator on_deskIt = m_onDesk->begin();
       on_deskIt != m_onDesk->end(); on_deskIt++)
     (*on_deskIt)->Initialize();
@@ -104,14 +104,14 @@ void DeskAdmin::NewRounds() {
   for(;playersIt != m_players->end(); ++playersIt) {
     m_onDesk->push_back((*playersIt)->Clone());
     ++on_deskIt; (*on_deskIt)->Initialize();
-    if(playersIt == m_D_player) m_currentPlayer = on_deskIt;
+    if(playersIt == m_D_player) GetCurrentPlayer() = on_deskIt;
   }
 
   Next_OnDesk();
-  m_roundsFirstPlayer = m_currentPlayer;
-  m_smallBlind = *m_currentPlayer;
+  m_roundsFirstPlayer = GetCurrentPlayer();
+  m_smallBlind = *GetCurrentPlayer();
   Next_OnDesk();
-  m_bigBlind = *m_currentPlayer;
+  m_bigBlind = *GetCurrentPlayer();
   //cout<<" small: "<<m_smallBlind->GetName()<<" big: "<<m_bigBlind->GetName()<<endl;
 
   m_round = pre_flop; // initialize m_round
@@ -134,20 +134,20 @@ void DeskAdmin::NewRounds() {
 }
 
 void DeskAdmin::CheckLoop() {
-  m_firstPlayer = *m_currentPlayer;
+  m_firstPlayer = *GetCurrentPlayer();
   do {
     PlayerAction();
-  } while((*m_currentPlayer!=m_firstPlayer)&&!m_raiser);
+  } while((*GetCurrentPlayer()!=m_firstPlayer)&&!m_raiser);
 }
 
 void DeskAdmin::RaiseLoop() {
   do {
     PlayerAction();
-  } while(*m_currentPlayer!=m_raiser);
+  } while(*GetCurrentPlayer()!=m_raiser);
 }
 
 void DeskAdmin::RecordStatus() {
-  m_actionPlayer = *m_currentPlayer; m_tmp_roundBet = GetRoundBet();
+  m_actionPlayer = *GetCurrentPlayer(); m_tmp_roundBet = GetRoundBet();
   m_tmp_money = m_actionPlayer->GetMoney();
   m_tmp_bet = m_actionPlayer->GetBet();
   m_tmp_pool = m_pool;
@@ -184,7 +184,7 @@ void DeskAdmin::PlayerAction() {
       case IPlayer::fold:
 	{
 	  // record raiser & first
-	  Players::const_iterator validPlayer = m_currentPlayer;
+	  Players::const_iterator validPlayer = GetCurrentPlayer();
 	  ++validPlayer;
 	  if(!*validPlayer)
 	    ++validPlayer;
@@ -193,10 +193,10 @@ void DeskAdmin::PlayerAction() {
 	  if(m_raiser == m_actionPlayer)
 	    m_raiser = *validPlayer;
 	  // pointer move
-	  Players::iterator quiter = m_currentPlayer;
-	  --m_currentPlayer;
-	  if(!*m_currentPlayer)
-	    --m_currentPlayer;
+	  Players::iterator quiter = GetCurrentPlayer();
+	  --GetCurrentPlayer();
+	  if(!*GetCurrentPlayer())
+	    --GetCurrentPlayer();
 	  // remove from desk
 	  m_onDesk->erase(quiter); 
 	}
