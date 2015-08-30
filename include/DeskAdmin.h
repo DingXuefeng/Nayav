@@ -15,6 +15,7 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+class RoundAdmin;
 class DeskAdmin : public IDeskAdmin{
   public:
     void AddPlayer(IPlayer *player) { 
@@ -53,6 +54,7 @@ class DeskAdmin : public IDeskAdmin{
     Players *m_onDesk;
     Cards m_pubCards;
     std::map<IPlayer*,const Cards*> m_inhands;
+    RoundAdmin* m_roundAdmin;
 
   private:
     void RoundInitialize();
