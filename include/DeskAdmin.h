@@ -9,13 +9,13 @@
 #ifndef DeskAdmin_H
 #define DeskAdmin_H
 #include "IDeskAdmin.h"
+#include "RoundAdmin.h"
 #include "IPlayer.h"
 #include <vector>
 #include "Judger.h"
 #include <iostream>
 using std::cout;
 using std::endl;
-class RoundAdmin;
 class DeskAdmin : public IDeskAdmin{
   public:
     void AddPlayer(IPlayer *player) { 
@@ -40,8 +40,9 @@ class DeskAdmin : public IDeskAdmin{
     int m_tmp_pool;
     int m_round;
     int m_pool;
-    Players::iterator m_currentPlayer;
     IPlayer *m_actionPlayer;
+    IPlayer *& GetActionPlayer() { return m_actionPlayer; }
+    const IPlayer * GetActionPlayer() const { return m_actionPlayer; }
     IPlayer *m_smallBlind;
     IPlayer *m_bigBlind;
     IPlayer *m_firstPlayer;
@@ -57,6 +58,7 @@ class DeskAdmin : public IDeskAdmin{
     RoundAdmin* m_roundAdmin;
 
   private:
+    RoundAdmin* GetRoundAdmin() const { return m_roundAdmin; }
     void RoundInitialize();
     void SendInhand();
     void FirstRoundLoop();
@@ -68,7 +70,10 @@ class DeskAdmin : public IDeskAdmin{
     void Show(const Cards& pub,const std::map<IPlayer*,const Cards*>&) const;
     const bool IsBlind() const;
     const int GetBlind() const { return 10; };
-    Players::iterator& GetCurrentPlayer() { return m_currentPlayer; }
+    Players::iterator& GetCurrentPlayer() { 
+      return GetRoundAdmin()->GetCurrentPlayer();
+      //return m_currentPlayer; 
+    }
     void Next_OnDesk() { 
       ++GetCurrentPlayer();
       if(GetCurrentPlayer() == m_onDesk->end())

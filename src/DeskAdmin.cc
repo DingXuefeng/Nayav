@@ -147,9 +147,9 @@ void DeskAdmin::RaiseLoop() {
 }
 
 void DeskAdmin::RecordStatus() {
-  m_actionPlayer = *GetCurrentPlayer(); m_tmp_roundBet = GetRoundBet();
-  m_tmp_money = m_actionPlayer->GetMoney();
-  m_tmp_bet = m_actionPlayer->GetBet();
+  GetActionPlayer() = *GetCurrentPlayer(); m_tmp_roundBet = GetRoundBet();
+  m_tmp_money = GetActionPlayer()->GetMoney();
+  m_tmp_bet = GetActionPlayer()->GetBet();
   m_tmp_pool = m_pool;
 }
 
@@ -159,27 +159,27 @@ void DeskAdmin::ShowStatus() {
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
   printf("Player [%8s] $ (%4d) => (%4d), Bet $ (%4d) => (%4d) \
       Round Bet $ (%4d) => (%4d) Bet Pool (%4d) => (%4d)\n",
-      m_actionPlayer->GetName(),
-      m_tmp_money,m_actionPlayer->GetMoney(),
-      m_tmp_bet,m_actionPlayer->GetBet(),
+      GetActionPlayer()->GetName(),
+      m_tmp_money,GetActionPlayer()->GetMoney(),
+      m_tmp_bet,GetActionPlayer()->GetBet(),
       m_tmp_roundBet,GetRoundBet(),
       m_tmp_pool,m_pool);
 }
 
 const bool DeskAdmin::IsBlind() const {
-  return ((m_actionPlayer==m_smallBlind)||(m_actionPlayer==m_bigBlind));
+  return ((GetActionPlayer()==m_smallBlind)||(GetActionPlayer()==m_bigBlind));
 }
 
 void DeskAdmin::PlayerAction() {
   RecordStatus();
   if(IsBlind()) {
-    m_actionPlayer->Raise(GetBlind());
-    if(m_actionPlayer==m_smallBlind) m_smallBlind = NULL;
-    if(m_actionPlayer==m_bigBlind) m_bigBlind = NULL;
+    GetActionPlayer()->Raise(GetBlind());
+    if(GetActionPlayer()==m_smallBlind) m_smallBlind = NULL;
+    if(GetActionPlayer()==m_bigBlind) m_bigBlind = NULL;
     m_raiser = NULL;
     cout<<" Bl Rs ";
   } else {
-    IPlayer::Action action = m_actionPlayer->GetAction();
+    IPlayer::Action action = GetActionPlayer()->GetAction();
     switch(action) {
       case IPlayer::fold:
 	{
@@ -188,9 +188,9 @@ void DeskAdmin::PlayerAction() {
 	  ++validPlayer;
 	  if(!*validPlayer)
 	    ++validPlayer;
-	  if(m_firstPlayer == m_actionPlayer)
+	  if(m_firstPlayer == GetActionPlayer())
 	    m_firstPlayer = *validPlayer;
-	  if(m_raiser == m_actionPlayer)
+	  if(m_raiser == GetActionPlayer())
 	    m_raiser = *validPlayer;
 	  // pointer move
 	  Players::iterator quiter = GetCurrentPlayer();
@@ -203,11 +203,11 @@ void DeskAdmin::PlayerAction() {
 	cout<<" Fold  ";
 	break;
       case IPlayer::call:
-	m_actionPlayer->Call();
+	GetActionPlayer()->Call();
 	cout<<" Call  ";
 	break;
       case IPlayer::raise:
-	m_actionPlayer->Raise(m_actionPlayer->GetRaisedMoney());
+	GetActionPlayer()->Raise(GetActionPlayer()->GetRaisedMoney());
 	cout<<" Raise ";
 	break;
       default:
