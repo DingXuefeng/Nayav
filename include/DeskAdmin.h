@@ -26,8 +26,10 @@ class DeskAdmin : public IDeskAdmin{
     void AddBet(const int bet) { Getpool() += bet; }
     void Raise(IPlayer* raiser, const int raise);
   private:
+    void SendCards();
     void Loop();
     int& Getround() { return GetRoundAdmin()->Getround(); }
+    const int Getround() const { return GetRoundAdmin()->Getround(); }
     int& GetRoundBet() { return GetRoundAdmin()->GetRoundBet(); }
     const int GetRoundBet() const { return GetRoundAdmin()->GetRoundBet(); }
     int& Getpool() { return GetRoundAdmin()->Getpool(); }
@@ -39,9 +41,9 @@ class DeskAdmin : public IDeskAdmin{
     IPlayer *& GetbigBlind() { return GetRoundAdmin()->GetbigBlind(); }
     const IPlayer * GetbigBlind() const { return GetRoundAdmin()->GetbigBlind(); }
     Players & GetonDesk() { return GetRoundAdmin()->GetonDesk(); }
-    const Players GetonDesk() const { return GetRoundAdmin()->GetonDesk(); }
-    const Cards& GetpubCards() const { return m_pubCards; }
-    Cards& GetpubCards() { return m_pubCards; }
+    const Players & GetonDesk() const { return GetRoundAdmin()->GetonDesk(); }
+    const Cards& GetpubCards() const { return GetJudger()->GetpubCards(); }
+    Cards& GetpubCards() { return GetJudger()->GetpubCards(); }
     const Inhands& Getinhands() const { return m_inhands; }
     Inhands& Getinhands() { return m_inhands; }
 
@@ -60,7 +62,7 @@ class DeskAdmin : public IDeskAdmin{
     void SendInhand();
     void FirstRoundLoop();
     void RoundLoop(const int num_pub = 1);
-    DeskAdmin() : m_players(new Players), m_judger(new Judger) {};
+    DeskAdmin() : m_players(new Players), m_judger(new Judger(this)) {};
     friend class Eimer;
     IJudger* GetJudger() const { return m_judger; };
     void SetJudger(IJudger* judger) { m_judger = judger; }

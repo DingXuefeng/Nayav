@@ -45,6 +45,10 @@ void DeskAdmin::Loop() {
   GetRoundAdmin()->Loop();
 }
 
+void DeskAdmin::SendCards() {
+  GetJudger()->SendCards();
+}
+
 
 void DeskAdmin::SendInhand() {
   for(Players::iterator on_deskIt = GetonDesk().begin();
@@ -58,13 +62,15 @@ void DeskAdmin::SendInhand() {
 }
 
 void DeskAdmin::FirstRoundLoop() {
+  SendCards();
   SendInhand();
   Loop();
 }
 
 void DeskAdmin::RoundLoop(const int num_pub) {
+  SendCards();
   for(int i = 0;i<num_pub;i++)
-    m_pubCards.push_back(Deck::GetRandom());
+    GetpubCards().push_back(Deck::GetRandom());
   Loop();
 }
 
@@ -79,7 +85,7 @@ void DeskAdmin::NewRounds() {
   m_roundAdmin->Initialize();
 
   Deck::Flush(); // initialize deck
-  m_pubCards.clear(); // initialize pub cards
+  GetpubCards().clear(); // initialize pub cards
   Getinhands().clear(); // initialize in hand cards
 
   // start 4 rounds
@@ -90,7 +96,7 @@ void DeskAdmin::NewRounds() {
 
   // show cards
   IJudger* judger = GetJudger();
-  judger->Judge(m_pubCards,Getinhands());
+  judger->Judge(GetpubCards(),Getinhands());
 
   for(Players::const_iterator winnersIt = GetJudger()->GetWinners().begin();
       winnersIt != GetJudger()->GetWinners().end(); ++winnersIt)
@@ -100,22 +106,5 @@ void DeskAdmin::NewRounds() {
 }
 
 void DeskAdmin::Show() const {
-  cout<<endl;
-  for(Inhands::const_iterator inhandsIt = Getinhands().begin();
-      inhandsIt != Getinhands().end(); ++inhandsIt ){
-    printf("Player [%8ss] [-->",inhandsIt->first->GetName());
-    for(Cards::const_iterator cardsIt = inhandsIt->second->begin();
-	cardsIt != inhandsIt->second->end(); cardsIt++) {
-      cout<<"["<<CardTool::GetName(*cardsIt)<<"] ";
-    }
-    cout<<" <--] pub --> ( ";
-    for(size_t i = 0;i<m_pubCards.size();i++) {
-      cout<<"["<<CardTool::GetName(m_pubCards[i])<<"] ";
-    }
-    if(GetJudger()->GetWinnerRank() == GetJudger()->GetMarks().at(inhandsIt->first))
-      cout<<") [Win! ] : <";
-    else
-      cout<<") [Loose] : <";
-    cout<<CardTool::ToType(GetJudger()->GetMarks().at(inhandsIt->first))<<">"<<endl;
-  }
+  GetJudger()->Show();
 }

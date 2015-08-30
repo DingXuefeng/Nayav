@@ -8,11 +8,8 @@
 
 #ifndef IDeskAdmin_H
 #define IDeskAdmin_H
-#include "Card.h"
-#include <vector>
-class IPlayer;
+#include "IPlayer.h"
 class IJudger;
-#include <map>
 class IDeskAdmin{
   public:
     enum Round {
@@ -24,6 +21,8 @@ class IDeskAdmin{
   public:
     virtual void AddPlayer(IPlayer *player) = 0;
     virtual void StartNewDesk() = 0;
+    virtual const int Getround() const = 0;
+    virtual const Players & GetonDesk() const = 0;
     virtual const int GetRoundBet() const = 0;
     virtual void Raise(IPlayer* raiser, const int raise) = 0;
     virtual void AddBet(const int bet) = 0;

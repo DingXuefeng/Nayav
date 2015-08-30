@@ -18,5 +18,13 @@ class IJudger{
     virtual const std::map<IPlayer*,int>& GetMarks() const = 0;
     virtual int GetWinnerRank() const = 0;
     virtual const Players& GetWinners() const = 0;
+    virtual const Cards& GetpubCards() const = 0;
+    virtual Cards& GetpubCards() = 0;
+    virtual const Inhands& Getinhands() const = 0;
+    virtual Inhands& Getinhands() = 0;
+    virtual void Show() const = 0;
+    virtual void SendCards() = 0;
+    virtual const IDeskAdmin *GetDeskAdmin() const = 0;
+    virtual IDeskAdmin *&GetDeskAdmin() = 0;
 };
 #endif
