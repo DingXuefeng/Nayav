@@ -26,14 +26,11 @@ class DeskAdmin : public IDeskAdmin{
     void NewRounds();
     void AddBet(const int bet) { Getpool() += bet; }
   private:
-    void BlindAction();
-    void CheckLoop();
-    void RaiseLoop();
     void Loop();
     void PlayerAction();
     void RecordStatus();
     void ShowStatus();
-    int m_round;
+    int& Getround() { return GetRoundAdmin()->Getround(); }
     int& GetRoundBet() { return GetRoundAdmin()->GetRoundBet(); }
     const int GetRoundBet() const { return GetRoundAdmin()->GetRoundBet(); }
     int& Getpool() { return GetRoundAdmin()->Getpool(); }
@@ -80,8 +77,7 @@ class DeskAdmin : public IDeskAdmin{
       return GetRoundAdmin()->GetCurrentPlayer();
     }
     Players::iterator& GetroundsFirstPlayer() { 
-      return m_roundsFirstPlayer;
-//      return GetRoundAdmin()->GetCurrentPlayer();
+      return GetRoundAdmin()->GetroundsFirstPlayer();
     }
     void Next_OnDesk() { 
       GetRoundAdmin()->Next_OnDesk();

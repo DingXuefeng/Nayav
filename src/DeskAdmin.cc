@@ -43,15 +43,12 @@ void DeskAdmin::RoundInitialize() {
   for(Players::iterator on_deskIt = GetonDesk().begin();
       on_deskIt != GetonDesk().end(); on_deskIt++)
     (*on_deskIt)->Initialize();
-  cout<<"--------------------------New round.: <"<<CardTool::GetRoundName(m_round)<<
+  cout<<"--------------------------New round.: <"<<CardTool::GetRoundName(Getround())<<
     ">-------------------------"<<endl;
 }
 
 void DeskAdmin::Loop() {
-  CheckLoop();
-  if(Getraiser()) RaiseLoop();
-  ++m_round;
-  cout<<"---------------------------------End-------------------------------"<<endl;
+  GetRoundAdmin()->Loop();
 }
 
 void DeskAdmin::RoundLoop(const int num_pub) {
@@ -72,15 +69,10 @@ void DeskAdmin::SendInhand() {
   }
 }
 
-void DeskAdmin::BlindAction() {
-  PlayerAction();
-  PlayerAction();
-}
-
 void DeskAdmin::FirstRoundLoop() {
   SendInhand();
   RoundInitialize();
-  BlindAction();
+  GetRoundAdmin()->BlindAction();
   Loop();
 }
 
@@ -93,18 +85,10 @@ void DeskAdmin::NewRounds() {
   m_roundAdmin->AddPlayers(*m_players);
   m_roundAdmin->GetD_player() = (*m_D_player);
   m_roundAdmin->Initialize();
+
   Deck::Flush(); // initialize deck
   m_pubCards.clear(); // initialize pub cards
   m_inhands.clear(); // initialize in hand cards
-  Getpool() = 0; // pool to zero
-
-  GetroundsFirstPlayer() = GetCurrentPlayer();
-  GetsmallBlind() = *GetCurrentPlayer();
-  Next_OnDesk();
-  GetbigBlind() = *GetCurrentPlayer();
-  //cout<<" small: "<<GetsmallBlind()->GetName()<<" big: "<<GetbigBlind()->GetName()<<endl;
-
-  m_round = pre_flop; // initialize m_round
 
   // start 4 rounds
   FirstRoundLoop(); // pre-flop round
@@ -121,19 +105,6 @@ void DeskAdmin::NewRounds() {
     (*winnersIt)->Win(Getpool()/(GetJudger()->GetWinners().size()));
 
   Show(m_pubCards,m_inhands);
-}
-
-void DeskAdmin::CheckLoop() {
-  GetfirstPlayer() = *GetCurrentPlayer();
-  do {
-    PlayerAction();
-  } while((*GetCurrentPlayer()!=GetfirstPlayer())&&!Getraiser());
-}
-
-void DeskAdmin::RaiseLoop() {
-  do {
-    PlayerAction();
-  } while(*GetCurrentPlayer()!=Getraiser());
 }
 
 void DeskAdmin::RecordStatus() {
