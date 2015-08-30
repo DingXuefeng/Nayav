@@ -17,7 +17,9 @@ using std::cout;
 using std::endl;
 class DeskAdmin : public IDeskAdmin{
   public:
-    void AddPlayer(IPlayer *player) { m_players->push_back(player); };
+    void AddPlayer(IPlayer *player) { 
+      const_cast<Players*>(m_players)->push_back(player); 
+    };
     void StartNewDesk();
     const int GetRoundBet() const { return m_roundBet; }
     void Raise(IPlayer* raiser, const int raise);
@@ -25,6 +27,7 @@ class DeskAdmin : public IDeskAdmin{
   private:
     void CheckLoop();
     void RaiseLoop();
+    void RoundLoop();
     void PlayerAction();
     void RecordStatus();
     void ShowStatus();
@@ -33,14 +36,17 @@ class DeskAdmin : public IDeskAdmin{
     int m_tmp_bet;
     Players::iterator m_currentPlayer;
     IPlayer *m_actionPlayer;
+    IPlayer *m_firstPlayer;
+    Players::iterator m_roundsFirstPlayer;
     IPlayer *m_raiser;
     int m_roundBet;
-    Players *m_players;
+    const Players *m_players;
     IJudger *m_judger;
-    Players::iterator m_D_player;
+    Players::const_iterator m_D_player;
     Players *m_onDesk;
 
   private:
+    void RoundInitialize();
     DeskAdmin() : m_players(new Players), m_judger(new Judger) {};
     friend class Eimer;
     IJudger* GetJudger() const { return m_judger; };
