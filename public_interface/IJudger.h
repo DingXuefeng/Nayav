@@ -26,5 +26,6 @@ class IJudger{
     virtual void SendCards() = 0;
     virtual const IDeskAdmin *GetDeskAdmin() const = 0;
     virtual IDeskAdmin *&GetDeskAdmin() = 0;
+    virtual void Initialize() = 0;
 };
 #endif

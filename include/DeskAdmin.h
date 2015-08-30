@@ -28,24 +28,17 @@ class DeskAdmin : public IDeskAdmin{
   private:
     void SendCards();
     void Loop();
-    int& Getround() { return GetRoundAdmin()->Getround(); }
+    //int& Getround() { return GetRoundAdmin()->Getround(); }
     const int Getround() const { return GetRoundAdmin()->Getround(); }
-    int& GetRoundBet() { return GetRoundAdmin()->GetRoundBet(); }
+    //int& GetRoundBet() { return GetRoundAdmin()->GetRoundBet(); }
     const int GetRoundBet() const { return GetRoundAdmin()->GetRoundBet(); }
     int& Getpool() { return GetRoundAdmin()->Getpool(); }
     const int Getpool() const { return GetRoundAdmin()->Getpool(); }
-    IPlayer *& GetActionPlayer() { return GetRoundAdmin()->GetActionPlayer(); }
-    const IPlayer * GetActionPlayer() const { return GetRoundAdmin()->GetActionPlayer(); }
-    IPlayer *& GetsmallBlind() { return GetRoundAdmin()->GetsmallBlind(); }
-    const IPlayer * GetsmallBlind() const { return GetRoundAdmin()->GetsmallBlind(); }
-    IPlayer *& GetbigBlind() { return GetRoundAdmin()->GetbigBlind(); }
-    const IPlayer * GetbigBlind() const { return GetRoundAdmin()->GetbigBlind(); }
-    Players & GetonDesk() { return GetRoundAdmin()->GetonDesk(); }
     const Players & GetonDesk() const { return GetRoundAdmin()->GetonDesk(); }
     const Cards& GetpubCards() const { return GetJudger()->GetpubCards(); }
-    Cards& GetpubCards() { return GetJudger()->GetpubCards(); }
+    //Cards& GetpubCards() { return GetJudger()->GetpubCards(); }
     const Inhands& Getinhands() const { return GetJudger()->Getinhands(); }
-    Inhands& Getinhands() { return GetJudger()->Getinhands(); }
+    //Inhands& Getinhands() { return GetJudger()->Getinhands(); }
 
     const Players *m_players;
     IJudger *m_judger;

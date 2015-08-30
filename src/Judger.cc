@@ -28,6 +28,11 @@ const Players& Judger::Judge(const Cards &pub,const Inhands& inhands) {
   return m_winner;
 }
 
+void Judger::Initialize() {
+  Getinhands().clear(); // initialize in hand cards
+  GetpubCards().clear(); // initialize pub cards
+}
+
 #include <stdexcept>
 void Judger::SendCards() {
   switch(GetDeskAdmin()->Getround()) {

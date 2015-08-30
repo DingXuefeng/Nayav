@@ -11,6 +11,7 @@
 #include "Player.h"
 #include <iostream>
 #include <limits>
+#include "shellUI.h"
 using namespace std;
 class Human : public Player{
   public:
@@ -35,5 +36,8 @@ class Human : public Player{
     Human(int money,bool allowSave,int saved,const char *name) : 
       Player(money,allowSave,saved,name) {};
     friend class Users;
+  private:
+    UI *GetUI() { return shellUI::Get(); };
+    std::ostream &GetOs() { return std::cout; };
 };
 #endif

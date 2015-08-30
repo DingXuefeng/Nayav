@@ -9,7 +9,9 @@
 #ifndef IPlayer_H
 #define IPlayer_H
 #include <list>
+#include <iostream>
 class IDeskAdmin;
+class UI;
 class IPlayer {
   public:
     enum Action {
@@ -36,6 +38,8 @@ class IPlayer {
     virtual void Raise(int money) = 0;
     virtual void SetDeskAdmin(IDeskAdmin * const deskadmin) = 0;
     virtual IDeskAdmin* GetDeskAdmin() const = 0;
+    virtual UI *GetUI() = 0;
+    virtual std::ostream &GetOs() = 0;
 };
 typedef std::list<IPlayer*> Players;
 #endif

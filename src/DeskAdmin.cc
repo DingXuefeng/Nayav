@@ -52,8 +52,6 @@ void DeskAdmin::NewRounds() {
   m_roundAdmin->Initialize();
 
   Deck::Flush(); // initialize deck
-  GetpubCards().clear(); // initialize pub cards
-  Getinhands().clear(); // initialize in hand cards
 
   // start 4 rounds
   RoundLoop(); // pre flop round

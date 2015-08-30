@@ -31,6 +31,7 @@ class Judger : public IJudger{
   public:
     const IDeskAdmin *GetDeskAdmin() const { return m_deskAdmin; }
     IDeskAdmin *&GetDeskAdmin() { return m_deskAdmin; }
+    void Initialize();
   private:
     Cards m_pubCards;
     Inhands m_inhands;
