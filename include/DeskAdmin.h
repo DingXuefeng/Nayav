@@ -65,8 +65,8 @@ class DeskAdmin : public IDeskAdmin{
     const int GetBlind() const { return 10; };
     void Next_OnDesk() { 
       ++m_currentPlayer;
-      if(!*m_currentPlayer)
-	++m_currentPlayer;
+      if(m_currentPlayer == m_onDesk->end())
+	m_currentPlayer = m_onDesk->begin();
     };
 };
 #endif

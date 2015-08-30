@@ -15,13 +15,15 @@ void DeskAdmin::StartNewDesk() {
     cout<<" Players: ";
     int i = 0;
     for(Players::const_iterator m_playersIt = m_players->begin();
-	m_playersIt != m_players->end(); ++m_playersIt) {
-      cout<<" ["<<++i<<"]"<<(*m_playersIt)->GetName();
+	m_playersIt != m_players->end(); ++m_playersIt, ++i) {
+      cout<<" [";
       if(m_D_player == m_playersIt)
-	cout<<"(D Player)";
+	cout<<"D";
+      else
+	cout<<i;
+      cout<<"]"<<(*m_playersIt)->GetName();
     }
     cout<<endl;
-    //
 
     NewRounds();
 
@@ -37,6 +39,9 @@ void DeskAdmin::RoundInitialize() {
   m_roundBet = 0;
   m_raiser = NULL;
   m_currentPlayer = m_roundsFirstPlayer;
+  for(Players::iterator on_deskIt = m_onDesk->begin();
+      on_deskIt != m_onDesk->end(); on_deskIt++)
+    (*on_deskIt)->Initialize();
   cout<<"-----------------------------New round.----------------------------"<<endl;
 }
 
@@ -103,6 +108,7 @@ void DeskAdmin::NewRounds() {
   //cout<<" small: "<<m_smallBlind->GetName()<<" big: "<<m_bigBlind->GetName()<<endl;
 
   m_round = pre_flop; // initialize m_round
+
   // start 4 rounds
   FirstRoundLoop(); // pre-flop round
   RoundLoop(3); // flop round
@@ -124,11 +130,7 @@ void DeskAdmin::NewRounds() {
 void DeskAdmin::CheckLoop() {
   m_firstPlayer = *m_currentPlayer;
   do {
-    cout<<"DEBUG "<<(*m_currentPlayer)<<endl;
-    cout<<"DEBUG "<<(*m_currentPlayer)->GetMoney()<<endl;
-    cout<<"DEBUG "<<(*m_currentPlayer)<<endl;
     PlayerAction();
-    cout<<"DEBUG "<<(*m_currentPlayer)<<endl;
   } while((*m_currentPlayer!=m_firstPlayer)&&!m_raiser);
 }
 
@@ -139,8 +141,7 @@ void DeskAdmin::RaiseLoop() {
 }
 
 void DeskAdmin::RecordStatus() {
-  m_actionPlayer = *m_currentPlayer;
-  m_tmp_roundBet = GetRoundBet();
+  m_actionPlayer = *m_currentPlayer; m_tmp_roundBet = GetRoundBet();
   m_tmp_money = m_actionPlayer->GetMoney();
   m_tmp_bet = m_actionPlayer->GetBet();
 }
@@ -157,14 +158,15 @@ void DeskAdmin::ShowStatus() {
 }
 
 const bool DeskAdmin::IsBlind() const {
-  return ((m_round==pre_flop)&&
-      ((m_actionPlayer==m_smallBlind)||(m_actionPlayer==m_bigBlind)));
+  return ((m_actionPlayer==m_smallBlind)||(m_actionPlayer==m_bigBlind));
 }
 
 void DeskAdmin::PlayerAction() {
   RecordStatus();
   if(IsBlind()) {
     m_actionPlayer->Raise(GetBlind());
+    if(m_actionPlayer==m_smallBlind) m_smallBlind = NULL;
+    if(m_actionPlayer==m_bigBlind) m_bigBlind = NULL;
     m_raiser = NULL;
     cout<<" Bl Rs ";
   } else {

@@ -33,6 +33,7 @@ class IPlayer {
     virtual void Fold() const = 0;
     virtual void Call() = 0;
     virtual void Raise(int money) = 0;
+    virtual void SetDeskAdmin(IDeskAdmin * const deskadmin) = 0;
     virtual IDeskAdmin* GetDeskAdmin() const = 0;
 };
 typedef std::list<IPlayer*> Players;

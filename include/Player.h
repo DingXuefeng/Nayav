@@ -20,8 +20,8 @@ using std::endl;
 class Player : public IPlayer {
   public:
     void Initialize() { m_bet = 0; };
-    virtual Action GetAction() const { return fold; };
-    virtual const int GetRaisedMoney() const { return GetDeskAdmin()->GetBlind(); };
+    virtual Action GetAction() const = 0;
+    virtual const int GetRaisedMoney() const = 0;
     const char* GetName() const { return m_name; };
     const int GetMoney() const { return m_money; };
     const int GetBet() const { return m_bet; };
@@ -39,13 +39,16 @@ class Player : public IPlayer {
     }
 
   public:
-    IPlayer* Clone() const { return new Player(GetMoney(),m_allowSave,m_saved,GetName()); }
+    IPlayer* Clone() const { 
+      return const_cast<Player*>(this);
+    }
   private:
 //    std::vector<Card*>* m_inhands;
     void JoinDesk(IDeskAdmin* deskadmin) { 
-      m_deskadmin = deskadmin; 
+      SetDeskAdmin(deskadmin);
       deskadmin->AddPlayer(this);
     };
+    void SetDeskAdmin(IDeskAdmin * const deskadmin) { m_deskadmin = deskadmin; };
     IDeskAdmin* GetDeskAdmin() const { return m_deskadmin; };
     IDeskAdmin* m_deskadmin;
     char *m_name;
