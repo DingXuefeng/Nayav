@@ -27,6 +27,7 @@ class DeskAdmin : public IDeskAdmin{
     void Raise(IPlayer* raiser, const int raise);
   private:
     void SendCards();
+    void NotifyUserStatus() const;
     void Loop();
     //int& Getround() { return GetRoundAdmin()->Getround(); }
     const int Getround() const { return GetRoundAdmin()->Getround(); }

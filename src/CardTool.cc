@@ -42,10 +42,7 @@ const std::string CardTool::ToType(int rank) {
 }
 #include <cstring>
 #include <cmath>
-const int CardTool::Rank(const Cards &cards) {
-  CardMasks _mask(7,false);
-  Cards _cards(cards.size());
-  std::copy(cards.begin(),cards.end(),_cards.begin());
+void CardTool::Sort(Cards &_cards) {
   for(size_t i = 0;i<_cards.size()-1;i++)
     for(size_t j = i+1;j<_cards.size();j++)
       if(_cards[i]/4<_cards[j]/4) {
@@ -53,6 +50,12 @@ const int CardTool::Rank(const Cards &cards) {
 	_cards[i] = _cards[j];
 	_cards[j] = tmp;
       }
+}
+const int CardTool::Rank(const Cards &cards) {
+  CardMasks _mask(7,false);
+  Cards _cards(cards.size());
+  std::copy(cards.begin(),cards.end(),_cards.begin());
+  Sort(_cards);
   char* mark = new char[6];
   memset(mark,0,6);
   mark[6] = IsFlush(_cards,_mask);
@@ -72,6 +75,7 @@ const int CardTool::Rank(const Cards &cards) {
 //throw std::runtime_error("Is pair only accepts 2 cards.");
 //
 const int CardTool::IsFlush(const Cards &cards, CardMasks& mask) {
+  if(cards.size()<5) return 0;
   for(size_t i = 0;i<cards.size()-4;i++)
     if(!mask[i])
       for(size_t j = i+1;j<cards.size()-3;j++)
@@ -97,6 +101,7 @@ const int CardTool::IsFlush(const Cards &cards, CardMasks& mask) {
 }
 
 const int CardTool::IsStraight(const Cards &cards, CardMasks& mask) {
+  if(cards.size()<5) return 0;
   for(size_t i = 0;i<cards.size()-4;i++)
     if(!mask[i])
       for(size_t j = i+1;j<cards.size()-3;j++)
@@ -119,6 +124,7 @@ const int CardTool::IsStraight(const Cards &cards, CardMasks& mask) {
 }
 
 const int CardTool::IsFour(const Cards &cards,CardMasks& mask) {
+  if(cards.size()<4) return 0;
   for(size_t i = 0;i<cards.size()-3;i++)
     if(!mask[i])
       for(size_t j = i+1;j<cards.size()-2;j++)
@@ -138,6 +144,7 @@ const int CardTool::IsFour(const Cards &cards,CardMasks& mask) {
 }
 
 const int CardTool::IsThree(const Cards &cards,CardMasks& mask) {
+  if(cards.size()<3) return 0;
   for(size_t i = 0;i<cards.size()-2;i++)
     if(!mask[i])
       for(size_t j = i+1;j<cards.size()-1;j++)

@@ -55,7 +55,6 @@ void RoundAdmin::InitializeSingleRound() {
 }
 
 void RoundAdmin::RecordStatus() {
-  GetActionPlayer() = *GetCurrentPlayer(); 
   m_tmp_RoundBet = GetRoundBet();
   m_tmp_money = GetActionPlayer()->GetMoney();
   m_tmp_bet = GetActionPlayer()->GetBet();
@@ -80,14 +79,18 @@ const bool RoundAdmin::IsBlind() const {
 }
 
 #include <string>
+#include "CardTool.h"
 void RoundAdmin::PlayerAction() {
-  RecordStatus();
+  GetActionPlayer() = *GetCurrentPlayer(); 
+  //RecordStatus();
   std::string action_str;
   if(IsBlind()) {
     GetActionPlayer()->Raise(GetBlind());
+    char buff[255];
+    sprintf(buff,"Blind <%4d>",GetBlind());
+    action_str = buff;
     if(GetActionPlayer()==GetsmallBlind()) GetsmallBlind() = NULL;
     if(GetActionPlayer()==GetbigBlind()) GetbigBlind() = NULL;
-    action_str = "Bl Rs";
   } else {
     IPlayer::Action action = GetActionPlayer()->GetAction();
     switch(action) {
@@ -115,18 +118,23 @@ void RoundAdmin::PlayerAction() {
 	action_str = "Call";
 	break;
       case IPlayer::raise:
-	GetActionPlayer()->Raise(GetActionPlayer()->GetRaisedMoney());
-	action_str = "Raise";
+	{
+	  int raisedMoney = GetActionPlayer()->GetRaisedMoney();
+	  GetActionPlayer()->Raise(raisedMoney);
+	  char buff[255];
+	  sprintf(buff,"Raise by <%4d>",raisedMoney);
+	  action_str = buff;
+	}
 	break;
       default:
 	break;
     }
   }
   char message[255];
-  sprintf(message,"Player [%8s] Action [%s]",
+  sprintf(message,"Player [%8s] Action [%-15s]",
       GetActionPlayer()->GetName(),action_str.c_str());
   Messenger::Get()->Notify(message);
-  ShowStatus();
+  //ShowStatus();
   Next_OnDesk();
 }
 

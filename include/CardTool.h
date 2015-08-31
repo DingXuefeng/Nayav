@@ -21,6 +21,7 @@ class CardTool {
     static const char* GetRoundName(const int round);
     static const std::string ToType(int rank);
     static const int Rank(const Cards &cards);
+    static void Sort(Cards &cards);
   private:
     static const int IsFlushStraight(const Cards &cards, CardMasks& mask);
     static const int IsFlush(const Cards &cards, CardMasks& mask);
